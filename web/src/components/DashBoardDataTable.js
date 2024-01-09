@@ -16,13 +16,14 @@ const DashBoardDataTable = ({ value, table_title, headerHeading, column }) => {
   const renderHeader = () => {
     return (
       <div className="dash_table_header ">
-        <h5 className="m-2">{table_title} </h5>
+        <h5 className="dash_summary_title">{table_title} </h5>
         <span className="p-input-icon-left">
-          <i className="pi pi-search" />
+          <i className="pi pi-search" style={{ top: "44%" }} />
           <InputTextCp
             value={globalFilterValue}
             onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
+            placeholder="Search"
+            className="  border-round-3xl h-2rem text-sm"
           />
         </span>
       </div>
@@ -44,17 +45,14 @@ const DashBoardDataTable = ({ value, table_title, headerHeading, column }) => {
       <Row>
         <Column header="MRF ID" rowSpan={2} />
         <Column header="Position Title" rowSpan={2} />
-        <Column header={headerHeading} colSpan={4} /> 
+        <Column header={headerHeading} colSpan={4} />
       </Row>
       <Row>
-       
-
-{column.map((col, index) => {
-         if((col.header!="MRF ID"&&col.header!="Position Title")){
-          return <Column key={index} field={col.field}
-          header={col.header}  />;
-         }
-       })}
+        {column.map((col, index) => {
+          if (col.header != "MRF ID" && col.header != "Position Title") {
+            return <Column key={index} field={col.field} header={col.header} />;
+          }
+        })}
       </Row>
     </ColumnGroup>
   );
@@ -65,18 +63,24 @@ const DashBoardDataTable = ({ value, table_title, headerHeading, column }) => {
     <div className="dashBoard_table">
       <DataTable
         value={value}
-        paginator
-        rows={7}
+        paginator={true}
+        rows={5}
         // rowsPerPageOptions={[ 10, 25, 50]}
         filters={filters}
         header={header}
         headerColumnGroup={headerGroup}
         scrollable
-        scrollHeight="flex">
+        scrollHeight="flex"
+      >
         {column.map((col, index) => {
-         
-          return <Column key={index} field={col.field}
-         header={col.header} body={col.body} />;
+          return (
+            <Column
+              key={index}
+              field={col.field}
+              header={col.header}
+              body={col.body}
+            />
+          );
         })}
       </DataTable>
     </div>

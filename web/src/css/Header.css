@@ -1,5 +1,6 @@
 .top_band{
   height: 75px;
+  background-color: #ffffff;
 }
 header{
   height: 100%;
@@ -54,21 +55,21 @@ header{
   }
   
   .acc-name .acc-logo {
-    border: 1px solid gray;
+    border: 1px solid #979799;
     text-align: center;
     border-radius: 50%;
-    padding: 1.2vh;
+    padding: 1vh;
     color: black;
     margin-right: 10px;
     font-weight:700;
   }
 
-  .top_band .logoutId{
-    background-color: rgb(196, 196, 196);
+  /* .top_band .logoutId:hover{
+    background-color: #d32f2e;
     width: 90px;
     height: 30px;
     border-radius: 5px;
     margin: 21px;
     padding: 1px;
-    color: black;
-  }
+    color: rgb(255, 255, 255);
+  } */

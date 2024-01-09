@@ -4,6 +4,7 @@ body {
 	font-family: "Poppins";
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	background-color: #c9c9c9;
 }
 
 code {

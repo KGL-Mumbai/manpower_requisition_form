@@ -5,7 +5,7 @@
 	color: #0b1016;
 }
 
-.my-req .my-req-title {
+ .my-req-title {
 	font-size: 22px;
 	font-weight: 600;
 	margin: 0;
@@ -19,13 +19,7 @@
 	height: 77vh;
 }
 
-.req-table .p-datatable-header {
-	background-color: white;
-	margin: 0;
-	font-size: 16px;
-	font-weight: 600;
-	color: #0b1016;
-}
+
 
 .req-table th {
 	font-size: 14px;

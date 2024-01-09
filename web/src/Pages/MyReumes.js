@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import DropdownComponent from "./../components/Dropdown";
 import MultiSelectDropdown from "./../components/multiselectDropdown";
@@ -8,18 +7,16 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { constantResumePath } from "./../components/constant";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import DashboardHeader from "./Header";
-import LeftPanel from "./LeftPanel";
-import "../styles/layout/InputComponents.css";
-import "../styles/layout/myResume.css"
- 
+import "../css/InputComponent.css";
+import "../css/MyResume.css";
+import { FILE_URL } from "../constants/config";
+
 const MyReumes = () => {
   const [myResumeData, setMyResumeData] = useState({});
   const [statusData, setStatusData] = useState({});
   const [forwardData, setForwardData] = useState({});
   const [values, setValues] = useState([]);
- 
+
   useEffect(() => {
     const fetchData = () => {
       try {
@@ -40,10 +37,10 @@ const MyReumes = () => {
         console.error("Error fetching data:", error);
       }
     };
- 
+
     fetchData();
   }, []);
- 
+
   // const  TextBoxComponent = (reason,param) => {
   //    const [textBoxValue, setTextBoxValue] = useState(reason.reason);
   //   const handleTextBoxChange = (e) => {
@@ -55,7 +52,7 @@ const MyReumes = () => {
   //     <InputTextarea  value={textBoxValue} onChange={handleTextBoxChange} rows={2} cols={30}  />
   //     );
   // };
- 
+
   const openPdfInNewTab = (pdfLink) => {
     window.open(pdfLink, "_blank");
   };
@@ -71,21 +68,20 @@ const MyReumes = () => {
         placeholder="Select Status"
         className="w-full md:w-23rem "
         onChange={(e) => statusdata.editorCallback(e.target.value)}
-        style={{color:"red"}}
+        style={{ color: "red" }}
       />
     );
   };
- 
+
   const MultiSelectTemplate = (options) => {
     return <div></div>;
   };
- 
+
   const MultiSelect = (data) => {
     console.log("multiselect", data);
     const [review, setreviewedByEmployeeId] = useState();
- 
+
     return (
-     
       <MultiSelectDropdown
         // id="resumeReviewer"
         //options={dropdownData.resumereviewer}
@@ -98,8 +94,7 @@ const MyReumes = () => {
         }}
         className="w-full md:w-23rem"
         // style={{color: "#d32f2e", fontFamily: "Poppins", fontWeight: 500 , fontSize:"14px"}}
-               
- 
+
         optionLabel="name"
         // optionValue="employeeId"
       />
@@ -139,8 +134,7 @@ const MyReumes = () => {
       });
   };
   const header = <h3 className="req-header">My Resumes</h3>;
- 
- 
+
   const textEditor = (options) => {
     console.log("reason", options.value);
     return (
@@ -150,12 +144,17 @@ const MyReumes = () => {
         rows={2}
         cols={28}
         autoResize
-        style={{color: "#6d6d6d", fontFamily: "Poppins", fontWeight: 500 , fontSize:"14px"}}
+        style={{
+          color: "#6d6d6d",
+          fontFamily: "Poppins",
+          fontWeight: 500,
+          fontSize: "14px",
+        }}
         onChange={(e) => options.editorCallback(e.target.value)}
       />
     );
   };
- 
+
   const actionBodyTemplate = (rowData) => {
     console.log("click", rowData);
     return (
@@ -188,103 +187,74 @@ const MyReumes = () => {
     }
     return s;
   };
- 
+
   const arrayToObj = (options = [], selectedOpt) => {
     if (Array.isArray(selectedOpt)) {
       return options.filter((e) => selectedOpt.includes(e.employeeId));
     }
   };
- 
+
   const objToArray = (selectedOpt = []) => {
     return selectedOpt.map((e) => e.employeeId);
   };
-  const ResumeHyperLink = (resume) => {
-    console.log(resume);
-    let resumeLink = `${constantResumePath}/Resume/${resume.resumePath}`;
- 
+  const resumeBodyTemplate = (interview) => {
+    console.log("UIUIIII")
+    let resumeLink = FILE_URL.RESUME + interview.resumePath;
     return (
-      <div>
-        <a
-          href={resumeLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => {
-            e.preventDefault();
-            openPdfInNewTab(resumeLink);
-          }}
-          style={{ color: "#d32f2e", fontFamily: "Poppins", fontWeight: 500 , fontSize:"14px"}}
-        >
-          {resume.name}
-          {".pdf"}
-        </a>
-      </div>
+      <a href={resumeLink} target="_blank" className="int-link-cell">
+        {interview.resumePath}
+      </a>
     );
   };
- 
+
+
   return (
-    <>
-      <div>
-        <div>
-          <DashboardHeader />
-        </div>
-        <div style={{ display: "flex" }}>
-          <div className=" ">
-            <LeftPanel />
-          </div>
-          <div className="MyResume">
-            <div >
-              <h3 className="text-black-alpha-90  text-2xl font-bold  m-4">
-                My Resumes
-              </h3>
-            </div>
-            <div >
-              <DataTable
-                value={values}
-                paginator
-                removableSort
-                rows={6}
-                scrollable
-                header={header}
-                scrollHeight="62vh"
-              >
-                <Column field="id" header="Sr No."></Column>
-                <Column
-                  field="resumePath"
-                  header="Resume"
-                  body={ResumeHyperLink}
-                ></Column>
-                <Column
-                  field="candidateStatusId"
-                  header="Status"
-                  body={SingleSelect}
-                  editor={(options) => SingleSelect(options)}
-                ></Column>
-                <Column
-                  field="reviewedByEmployeeId"
-                  header="Forward To"
-                  body={MultiSelect}
-                  editor={(options) => MultiSelect(options)}
-                ></Column>
-                <Column
-                  field="reason"
-                  header="Reason"
-                 
-                  editor={(options) => textEditor(options)}
-                ></Column>
- 
-                <Column
-                header="Action"
-                  headerStyle={{ width: "10%", minWidth: "8rem" }}
-                  bodyStyle={{ textAlign: "left" }}
-                  body={actionBodyTemplate}
-                ></Column>
-              </DataTable>
-            </div>
-          </div>
-        </div>
+    <div className="my-resume">
+      <h3 className="my-resume-title">My Resumes</h3>
+
+      <div className="my-resume-table">
+        <DataTable
+          value={values}
+          paginator={values.length > 7}
+          removableSort
+          rows={7}
+          scrollable
+          // header={header}
+          scrollHeight="flex"
+        >
+          <Column field="id" header="Sr No." headerStyle={{ width: "5%" }} ></Column>
+          <Column
+            field="resumePath"
+            header="Resume"
+            body={resumeBodyTemplate}
+          ></Column>
+          <Column
+            field="candidateStatusId"
+            header="Status"
+            body={SingleSelect}
+            editor={(options) => SingleSelect(options)}
+          ></Column>
+          <Column
+            field="reviewedByEmployeeId"
+            header="Forward To"
+            body={MultiSelect}
+            editor={(options) => MultiSelect(options)}
+          ></Column>
+          <Column
+            field="reason"
+            header="Reason"
+            editor={(options) => textEditor(options)}
+          ></Column>
+
+          <Column
+            header="Action"
+            headerStyle={{ width: "10%", minWidth: "8rem" }}
+            bodyStyle={{ textAlign: "left" }}
+            body={actionBodyTemplate}
+          ></Column>
+        </DataTable>
       </div>
-    </>
+    </div>
   );
 };
 export default MyReumes;
- 

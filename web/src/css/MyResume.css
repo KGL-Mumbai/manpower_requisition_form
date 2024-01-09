@@ -1,0 +1,22 @@
+  .my-resume{
+    font-family: "Poppins", sans-serif;
+	padding: 15px 20px;
+	background-color: #f6f6f6;
+	color: #0b1016;
+  }
+
+
+  .my-resume-title{
+    font-size: 22px;
+	font-weight: 600;
+	margin: 0;
+	margin-bottom: 15px;
+    color: #0b1016;
+  }
+
+  .my-resume-table{
+    border-radius: 0.5rem;
+	background-color: white;
+	padding: 0.5rem;
+	height: 77vh;
+  }

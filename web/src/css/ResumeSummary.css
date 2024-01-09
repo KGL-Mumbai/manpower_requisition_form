@@ -7,15 +7,15 @@
   padding: 0.5rem;
   max-height: 86vh;
   font-family: "Poppins", sans-serif;
-  }
-  .resume-card .p-dialog-content {
-    text-align: center;
+}
+.resume-card .p-dialog-content {
+  text-align: center;
   padding-bottom: 20px;
-    /* flex-grow: 1; */
+  /* flex-grow: 1; */
 }
 .resume-card .p-dialog-title {
   font-size: 16px;
-}  
+}
 
 /* .req-header {
     margin: 0;
@@ -23,38 +23,39 @@
     color: black;
   }
    */
-  .resume-table-header {
-    font-size: 14px;
-    margin: 0;
-    color: #0b1016;
-  }
-  
-  .resume-ref-col {
-    width: 12%;
-    font-weight: 500;
-    font-size: 14px;
-    
-  }
-  
-  .resume-col-hyperlink {
-    margin: 0;
-    font-size: 14px;
-    color: #d32f2e;
-    font-weight: 500;
-    text-decoration: underline;
-  }
-  
-  .resume-col {
-    font-size: 14px;
-    color: #0b1016;
-    font-weight: 500;
+.resume-table-header {
+  font-size: 14px;
+  margin: 0;
+  color: #0b1016;
+}
 
-  }
+.resume-ref-col {
+  width: 12%;
+  font-weight: 500;
+  font-size: 14px;
+}
 
-  .resume-reason-col{
-    width: 25%;
-    font-size: 14px;
-    color: #0b1016;
+.resume-col-hyperlink {
+  margin: 0;
+  font-size: 14px;
+  color: #d32f2e;
+  font-weight: 500;
+  text-decoration: underline;
+}
 
-  }
-  
+.resume-col {
+  font-size: 14px;
+  color: #160b0e;
+  font-weight: 500;
+}
+
+.resume-reason-col {
+  width: 90%;
+  font-size: 14px;
+  /* background-color: aqua; */
+  color: #0b1016;
+}
+.req-table .p-highlight,
+.req-table .p-highlight .p-sortable-column-icon {
+  color: #d32f2e;
+}

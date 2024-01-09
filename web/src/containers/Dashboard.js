@@ -7,13 +7,14 @@ import InterviewSummary from "../components/InterviewSummary";
 import DashMrfStatus from "../components/DashMrfStatus";
 import ResumeSummary from "../components/ResumeSummary";
 import DashBoardDataTable from "../components/DashBoardDataTable";
-
+ 
 import {
   filterSelectedColumn,
   filterResultGroupByCandidatestatus,
 } from "../constants/Utils";
+import { Dialog } from "primereact/dialog";
 // import HrResumeSummary from "../components/HrResumeSummary";
-
+ 
 function Dashboard({ roleId, userId }) {
   const [mrfStatus, setMrfStatus] = useState([]);
   const [resumeSummary, setResumeSummary] = useState([]);
@@ -24,18 +25,18 @@ function Dashboard({ roleId, userId }) {
   const [mrfStatusPopupId, setrfStatusPopupId] = useState(null);
   const [resumePopup, setResumePopup] = useState(false);
   const [resumePopupId, setResumePopupId] = useState(null);
-
+ 
   useEffect(() => {
     getSummaryData();
   }, []);
-
+ 
   async function getSummaryData() {
     const mrfStatusData = await getData(API_URL.MRF_STATUS_SUMMARY + "?roleId=" + roleId + "&userId=" + userId);
     // const mrfStatusData = API_URL.MRF_STATUS_SUMMARY;
     const resumeSummaryData = await getData(API_URL.RESUME_SUMMARY + "?Count=0&roleId=" + roleId + "&userId=" + userId);
     const interviewSummaryData = await getData(API_URL.INTERVIEW_SUMMARY + "?Count=0&roleId=" + roleId + "&userId=" + userId);
     setMrfStatus(mrfStatusData.result);
-
+ 
     if (roleId === ROLES.interviewer) {
       var filterInterviewerResumtSumData = [];
       resumeSummaryData.result.map((data) => {
@@ -49,19 +50,19 @@ function Dashboard({ roleId, userId }) {
     } else {
       setResumeSummary(resumeSummaryData.result);
     }
-
+ 
     setInterviewSummary(interviewSummaryData.result);
   }
   const interviewSummaryTableData = filterResultGroupByCandidatestatus(
     interviewSummary,
     ["Selected", "Assignment Received", "Onboarded", "Assignment Sent"]
   );
-
+ 
   const onMRFIdClicked = (e) => {
     setrfStatusPopupId(e);
     setMrfStatusPopup(true);
   };
-
+ 
   const onInterviewMRFIdClicked = (e) => {
     setInterviewPopupId(e);
     setInterviewPopup(true);
@@ -70,7 +71,7 @@ function Dashboard({ roleId, userId }) {
     setResumePopupId(e);
     setResumePopup(true);
   };
-
+ 
   const mrfIdInterviewRefernceTemplate = (rowData) => {
     return (
       <div>
@@ -80,11 +81,11 @@ function Dashboard({ roleId, userId }) {
         >
           {rowData.referenceno}
         </a>
-
+ 
       </div>
     );
   };
-
+ 
   const mrfIdResumeRefernceTemplate = (rowData) => {
     return (
       <div>
@@ -113,13 +114,13 @@ function Dashboard({ roleId, userId }) {
       header: "New",
       body: (rowData) => filterSelectedColumn(rowData, "New"),
     },
-
+ 
     {
       field: "Shortlisted",
       header: "Shortlisted",
       body: (rowData) => filterSelectedColumn(rowData, "Shortlisted"),
     },
-
+ 
     {
       field: "Rejected",
       header: "Rejected",
@@ -131,7 +132,7 @@ function Dashboard({ roleId, userId }) {
       body: (rowData) => filterSelectedColumn(rowData, "On Hold"),
     },
   ];
-
+ 
   const interviewSummaryColums = [
     {
       field: "referenceno",
@@ -157,25 +158,30 @@ function Dashboard({ roleId, userId }) {
       header: "Assignment Sent",
       body: (rowData) => filterSelectedColumn(rowData, "Assignment Sent"),
     },
-
+ 
     {
       field: "Assignment Received",
       header: "Assignment Received",
       body: (rowData) => filterSelectedColumn(rowData, "Assignment Received"),
     },
   ];
-
+ 
   if (roleId === ROLES.interviewer) {
-    resumeSummaryColums = resumeSummaryColums.filter(column => column.header !== "New" && 
+    resumeSummaryColums = resumeSummaryColums.filter(column => column.header !== "New" &&
     column.header !== "Rejected" && column.header !== "On Hold");
    };
-
+ 
   return (
     <div className="dashboard_wrapper">
-      <div className="dashboard_header">
-        <h3>My Dashboard</h3>
-      </div>
+      <h3 className="dashboard_title">My Dashboard</h3>
 
+      {roleId === ROLES.resumeReviwer && (
+        <>
+          <div className="resume-viwer-table">
+            <ResumeSummary roleId={roleId} userId={userId} mrfId={0} />
+          </div>
+        </>
+      )}
       <div className="dashboard_body">
         {(roleId === ROLES.hr || roleId === ROLES.mrfOwner) && (
           <div className="dashboard_body_left">
@@ -199,7 +205,7 @@ function Dashboard({ roleId, userId }) {
                 </thead>
                 <tbody className="mrf_table_body">
                   {mrfStatus.map((data, index) => {
-
+ 
                     return (
                       <tr key={"mrf_" + index}>
                         <td>{data.status}</td>
@@ -224,52 +230,50 @@ function Dashboard({ roleId, userId }) {
               </table>
             </div>
           </div>
-        )}
-        
-        <div className="dashboard_body_right">
+)}
+       
+       {(roleId === ROLES.hr ||
+            roleId === ROLES.mrfOwner ||
+            roleId === ROLES.interviewer) && (
+            <div className="dashboard_body_right">
+              {/* <div className="mrf_interview_summary "> */}
+              <DashBoardDataTable
+                value={interviewSummaryTableData}
+                column={interviewSummaryColums}
+                headerHeading={"Interview Status"}
+                table_title={"Interview Summary"}
+              />
+              <InterviewSummary
+                visible={interviewPopup}
+                onHide={() => setInterviewPopup(false)}
+                mrfId={interviewPopupId}
+                roleId={roleId}
+              />
 
-          <DashBoardDataTable
-            value={interviewSummaryTableData}
-            column={interviewSummaryColums}
-            headerHeading={"Interview Status"}
-            table_title={"Interview Summary"}
+              <DashBoardDataTable
+                value={resumeSummary}
+                column={resumeSummaryColums}
+                headerHeading={"Resume Status"}
+                table_title={"Resume Summary"}
+              />
 
-          />
-          <InterviewSummary
-            visible={interviewPopup}
-            onHide={() => setInterviewPopup(false)}
-            mrfId={interviewPopupId}
-            roleId={roleId}
-            userId={userId}
-          />
-
-          <DashBoardDataTable
-            value={resumeSummary}
-            column={resumeSummaryColums}
-           headerHeading={"Resume Status"}
-            table_title={"Resume Summary"}
-          />
-          <ResumeSummary
-            visible={resumePopup}
-            onHide={() => setResumePopup(false)}
-            mrfId={resumePopupId}
-            roleId={roleId}
-            userId={userId}
-          />
-
-
-          {/* <DashBoardDataTable
-            value={resumeSummary}
-            column={resumeSummaryColums}
-            headerHeading={"Resume Status"}
-            table_title={"Resume Summary"}
-          />
-          <HrResumeSummary  visible={false}
-            onHide={() => setResumePopup(false)}
-            mrfId={resumePopupId}/> */}
+              <Dialog
+                header={"Resume Summary"}
+                visible={resumePopup}
+                onHide={() => setResumePopup(false)}
+                draggable={false}
+                className="resume-card"
+              >
+                <ResumeSummary
+                  mrfId={resumePopupId}
+                  roleId={roleId}
+                  userId={userId}
+                />
+              </Dialog>
+            </div>
+          )}
         </div>
-
-      </div>
+      
     </div>
   );
 }

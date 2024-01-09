@@ -9,6 +9,8 @@ import "../css/InterviewSummary.css";
 import MultiSelectDropdown from "./multiselectDropdown";
 import { API_URL, FILE_URL,ROLES } from "../constants/config";
 import { changeDateFormat, strToArray } from "../constants/Utils";
+import { InputTextarea } from "primereact/inputtextarea";
+import InputTextareaComponent from "./InputTextarea";
 
 
 const ResumeSummary = ({roleId =null, visible, onHide, mrfId = null, dashboard = true,userId=null}) => {
@@ -18,9 +20,9 @@ const ResumeSummary = ({roleId =null, visible, onHide, mrfId = null, dashboard =
   const toastRef = useRef(null);
 
   useEffect(() => {
-    if (mrfId) {
+    
       fetchData();
-    }
+    
   }, [mrfId]);
 
   const fetchData = () => {
@@ -55,13 +57,17 @@ const ResumeSummary = ({roleId =null, visible, onHide, mrfId = null, dashboard =
       </Dialog>
     );
   }
+
+
   const MultiSelectDrop = (rowData, options) => {
-    console.log(rowData);
-    if (roleId === ROLES.hr || roleId === ROLES.interviewer) {
-      // Return a simple date or any other content for this role
+    console.log(roleId)
+    if (roleId === ROLES.hr || roleId === ROLES.resumeReviwer || roleId === ROLES.interviewer ) {
+       // Return a simple date or any other content for this role
+      
       return (
         <div>
-          {rowData.resumeReviewerName}
+
+<p className="resume-col">{rowData.resumeReviewerName}</p>
         </div>
       );
     } else 
@@ -187,6 +193,7 @@ const ResumeSummary = ({roleId =null, visible, onHide, mrfId = null, dashboard =
   };
 
   const resumeBodyTemplate = (interview) => {
+    console.log("UIUIIII")
     let resumeLink = FILE_URL.RESUME + interview.resumePath;
     return (
       <a href={resumeLink} target="_blank" className="int-link-cell">
@@ -194,11 +201,17 @@ const ResumeSummary = ({roleId =null, visible, onHide, mrfId = null, dashboard =
       </a>
     );
   };
-   const reasonTemplate=(resume)=>{
-if(!resume.reason ) return "To be Updated";
+ 
 
+
+       
+      const reasonTemplate=(resume)=>{
+
+if(!resume.reason ) return (<p className="resume-reason-col">To be Updated</p>);
 return(
-  <p className="resume-reason-col">{resume.reason}</p>
+
+  <InputTextareaComponent  value={resume.reason} rows={3} cols={50} />
+  // <p className="resume-reason-col">{resume.reason}</p>
 )
       }
   let columns = [
@@ -211,14 +224,14 @@ return(
     {
 			field: "candidateName",
 			header: "Name",
-      bodyClassName: "resume-ref-col resume-col",
+      bodyClassName: " resume-col",
 			sortable: true,
 		},
     {
       field: "resumePath",
       header: "Resume",
       body: resumeBodyTemplate,
-      bodyClassName: "resume-ref-col  ",
+      bodyClassName: " resume-col ",
       sortable: true,
     },
     {
@@ -238,14 +251,14 @@ return(
     {
       field: "candidatestatus",
       header: "Resume Status",
-      bodyClassName: "resume-ref-col  ",
+      bodyClassName: " resume-col",
       sortable: true,
     },
     {
       field: "reason",
       header: "Reason",
       body: reasonTemplate,
-      bodyClassName: "resume-reason-col",
+      bodyClassName: "resume-reason-col resume-col",
       sortable: true,
     },
     {
@@ -255,55 +268,33 @@ return(
       sortable: true,
     },
   ];
-  
-  if (roleId === ROLES.hr || roleId === ROLES.interviewer) {
+  if (roleId === ROLES.hr || roleId === ROLES.resumeReviwer || roleId === ROLES.interviewer ) {
     columns = columns.filter(column => column.header !== "Action");
    };
   return (
-    <div>
-       
-      <Dialog
-       header={
-        <div>
-           Resume Summary- MRF ID:{"\u00A0\u00A0"}
-          <span  style={{ fontWeight: 'bold', color: '#d9362b' }}>
-            {data[0].referenceNo}
-          </span>{"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}
-          Position Title:{"\u00A0\u00A0"}
-          <span style={{ fontWeight: 'bold', color: '#d9362b' }}>
-          {data[0].positionTitle}</span>
-        </div>
-      }
-      // header={"Resume Summary- MRF ID:  "+data[0].referenceNo+"  "+" "+" Position Title: "+data[0].positionTitle+" "}
-        visible={visible}
-        className="resume-card"
-        onHide={onHide}
-        draggable={false}
-      >
+    <div className="resume-summary-table">
+      
         <DataTable
           value={data}
-          paginator={data.length > 10}
+          paginator={data.length > 5}
 
           rows={10}
           scrollable
           scrollHeight="400px"
           draggable={false}
         >
-           {columns.map((col) => (
-              <Column
-                field={col.field}
-                header={col.header}
-                body={col.body}
-                bodyClassName={col.bodyClassName}
-                sortable={col.sortable}
-              />
-            ))}
-            </DataTable>
-         
-          
-  <ToastMessages ref={toastRef} />
-      </Dialog>
-      
+          {columns.map((col) => (
+            <Column
+              field={col.field}
+              header={col.header}
+              body={col.body}
+              bodyClassName={"resume-col" + col.bodyClassName}
+              sortable={col.sortable}
+            />
+          ))}
+        </DataTable>
+        <ToastMessages ref={toastRef} />
+      {/* </Dialog> */}
     </div>
   );
 };

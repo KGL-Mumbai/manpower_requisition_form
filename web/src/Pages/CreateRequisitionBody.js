@@ -123,6 +123,40 @@ const CreateRequisitionBody = ({
     setFormData({ ...formData, maxTargetSalary: maxSalary });
   };
 
+
+  
+  const handleMinGradeChange = (e) => {
+    setFormData({ ...formData, minGradeId: e.target.value });
+    handleMinChange(e);
+  };
+
+  const handleMinChange = (e) => {
+    const minGradeId = e.target.value;
+    if (minGradeId !== "" && formData.maxGradeId !== 0) {
+      if (minGradeId > formData.maxGradeId) {
+        toastRef.current.showWarrningMessage("Min Grade is greater than Max Grade");
+        return;
+      }
+    }
+   setFormData({ ...formData, minGradeId: minGradeId });
+  };
+  
+const handleMaxGradeChange = (e) => {
+    setFormData({ ...formData, maxGradeId: e.target.value });
+    handleMaxChange(e);
+  };
+
+  const handleMaxChange = (e) => {
+    const maxGradeId = e.target.value;
+    if (maxGradeId !== "" && formData.minGradeId !== 0) {
+      if (maxGradeId < formData.minGradeId) {
+        toastRef.current.showWarrningMessage("Max Grade is Less than Min Grade");
+        return;
+      }
+    }
+    setFormData({ ...formData, maxGradeId: maxGradeId });
+  };
+
   const fetchSubDepartments = (selectedDepartment) => {
     const apiUrl =
       API_URL.GET_CREATE_REQUISITION_DEPARTMENT + selectedDepartment;
@@ -524,7 +558,7 @@ if (PosORPr === 1) {
                     placeholder="Min"
                     disable={commonSettings.setReadOnly}
                     onChange={(e) =>
-                      setFormData({ ...formData, minGradeId: e.target.value })
+                      handleMinGradeChange(e)
                     }
                   />
 
@@ -539,7 +573,7 @@ if (PosORPr === 1) {
                     placeholder="Max"
                     disable={commonSettings.setReadOnly}
                     onChange={(e) =>
-                      setFormData({ ...formData, maxGradeId: e.target.value })
+                      handleMaxGradeChange(e)
                     }
                   />
                 </div>

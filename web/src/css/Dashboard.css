@@ -2,28 +2,64 @@
   /* width: calc(100% - 100px); */
   /* height: 95vh; */
   display: flex;
+  padding: 15px 20px;
+
   flex-direction: column;
   background-color: #f6f6f6;
 }
 
-.dashboard_wrapper .dashboard_header {
-  margin-left: 15px;
-  margin-top: 5px;
-  
-	
+.dashboard_wrapper .dashboard_title {
+  font-size: 22px;
+	font-weight: 600;
+	margin: 0;
+	margin-bottom: 15px;
+	color: #0b1016;
 }
 
-.dashboard_header h3 {
+
+
+.dashboard_wrapper .resume-viwer-table{
+  border-radius: 0.5rem;
+	background-color: white;
+	padding: 0.5rem;
+	height: 70vh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* .dashboard_header h3 {
   color: #0b1016;
   font-size: 22px;
   font-weight: 600;
   	margin-bottom: 4px;
-}
+} */
 
 .header h4 {
   color: #0b1016;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .dashboard_wrapper .dashboard_body {
@@ -33,13 +69,14 @@
 
 .dashboard_wrapper .dashboard_body .dashboard_body_left {
   width: 30%;
-  padding-top: 15px;
-  /* background-color: aqua; */
+  padding: 0%;
   margin-bottom: 1%;
 }
 
 .dashboard_wrapper .dashboard_body .dashboard_body_right {
-  width: 95%;
+  width: 70%;
+  /* background-color: aqua; */
+  
 }
 
 .mrf_status_summary .mrf_table {
@@ -63,7 +100,8 @@
 
 .dashboard_body_left .mrf_status_summary {
   height: 100%;
-  margin: 0px 15px;
+  margin: 0px ;
+  
   background-color: #ffffff;
   border-radius: 10px;
   border: 1px solid #e3e3e3;
@@ -163,7 +201,9 @@ table {
 }
 
 .dashboard_wrapper .header {
-  padding: 20px;
+  padding-left: 19px;
+  padding-bottom: 5px;
+  padding-top: 5px;
   font-size: larger;
 }
 
@@ -187,7 +227,6 @@ table {
 .mrf_interview_summary {
    /*width: 62vw; 
   height: 300px;*/
-  margin: 15px;
   background-color: #ffffff;
   border-radius: 10px;
   border: 1px solid #e3e3e3;

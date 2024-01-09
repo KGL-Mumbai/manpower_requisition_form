@@ -98,7 +98,6 @@ const MyRequisitions = ({roleId,userId}) => {
 			<h3 className="my-req-title">My Requisition</h3>
 			<div className="req-table">
 				<DataTable
-					header=""
 					value={reqData}
 					paginator={reqData.length > 10}
 					removableSort

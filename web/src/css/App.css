@@ -1,5 +1,5 @@
 * {
- /*  margin: 0;
+  /*  margin: 0;
   padding: 0;
   box-sizing: border-box;
   border: none; */
@@ -16,7 +16,7 @@ button {
   /* background-color: transparent; */
   box-sizing: border-box;
   border: none;
- /*  margin: 0;
+  /*  margin: 0;
   padding: 0; */
   cursor: pointer;
   /* display: flex; */
@@ -33,14 +33,27 @@ a {
 .content {
   display: flex;
 }
-.App{
+.App {
   position: relative;
-	max-width: 1600px;
-	min-height: 100vh;
-    margin: 0 auto;
-	overflow: hidden;
+  max-width: 1600px;
+  min-height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
-.content_right_wrapper{
+.content_right_wrapper {
   width: calc(100% - 100px);
+}
+
+.login-load {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-load img {
+  width: 70px;
+  aspect-ratio: 1;
 }
