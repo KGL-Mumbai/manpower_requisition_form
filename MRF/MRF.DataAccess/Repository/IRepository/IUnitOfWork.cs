@@ -44,6 +44,7 @@
         IPositionTitlemasterRepository PositionTitlemaster { get; }
          ISourcemasterRepository  Sourcemaster { get; }
         IEmailRecipientRepository EmailRecipient { get; }
+        IInterviewevaluationHistoryRepository InterviewevaluationHistory { get; }
         void Save();
     }
 }

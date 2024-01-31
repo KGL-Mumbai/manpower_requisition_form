@@ -8,6 +8,8 @@ import { navigateTo, removeSpaces, postData } from "../constants/Utils";
 import ToastMessages from "./../components/ToastMessages";
 import { Divider } from "primereact/divider";
 import InputTextareaComponent from "../components/InputTextarea";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const toastRef = useRef(null);
@@ -15,6 +17,7 @@ const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
   const [urlValue, setUrlValue] = useState("");
   const [disableUploadFile, setDisableUploadFile] = useState(false);
   const [disableUrlTextBox, setDisableUrlTextBox] = useState(false);
+const [isLoading,setIsLoading]=useState(false);
 
   const handleFileChange = (event) => {
     setSelectedFile(event);
@@ -25,6 +28,7 @@ const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
 
   const handleSubmit = async () => {
     setSubmitBtnDisable(true);
+    setIsLoading(true);
     const fileUploadData = new FormData();
     fileUploadData.append("file", selectedFile);
 
@@ -32,15 +36,7 @@ const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
     let fileName = removeSpaces(data.candidateName) + "assign";
     const interviewEvaluationIDD = data.interviewevaluationId;
 
-    // if (!disableUrlTextBox) {
-    //   fileName = urlValue;
-    // } else {
-    //   fileName = fileName + ".docx";
-    // }
     try {
-      // console.log(API_URL.ASSIGNMENT_UPLOAD + fileName)
-      // console.log(`${API_URL.ASSIGNMENT_UPLOAD}${fileName}`)
-
       let fileUploadResponse = false;
       if (!disableUploadFile) {
         fileUploadResponse = await fetch(API_URL.ASSIGNMENT_UPLOAD + fileName, {
@@ -79,30 +75,36 @@ const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
             refreshParent();
             handleReset();
             setSubmitBtnDisable(false);
+            setIsLoading(false);
           } else {
             console.error("Request failed with status:", response.status);
             if (response.status === 400) {
               toastRef.current.showBadRequestMessage(
                 "Bad request: " + response.url
               );
-              setSubmitBtnDisable(false);
-            }
+                }
+               setSubmitBtnDisable(false);
+            setIsLoading(false);
           }
         } catch (error) {
           console.error("Error:", error);
+          setSubmitBtnDisable(false);
+          setIsLoading(false);
         }
       } else {
         if (fileUploadResponse.status === 400) {
           toastRef.current.showBadRequestMessage(
             "you have to upload Assignment!"
           );
-          setSubmitBtnDisable(false);
         }
         console.error("Request failed with status:", fileUploadResponse.status);
         setSubmitBtnDisable(false);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
+      setSubmitBtnDisable(false);
+        setIsLoading(false);
     }
   };
 
@@ -159,8 +161,9 @@ const AssignmentUpload = ({ visible, data, onHide, refreshParent }) => {
           label={"Reset"}
           className={"cancel_btn ml-2"}
           onClick={handleReset}
-        />
+        /> {isLoading && <LoadingSpinner />}  
       </Dialog>
+     
       <ToastMessages ref={toastRef} />
     </>
   );

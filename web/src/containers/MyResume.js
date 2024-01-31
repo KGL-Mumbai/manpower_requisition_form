@@ -18,12 +18,15 @@ import InputTextareaComponent from "../components/InputTextarea";
 import MultiSelectDropdown from "../components/multiselectDropdown";
 import DropdownComponent from "../components/Dropdown";
 import ButtonC from "../components/Button";
+import LoadingSpinner from "../components/LoadingSpinner";
 const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
   const [statusData, setStatusData] = useState({});
   const [forwardData, setForwardData] = useState({});
   const [values, setValues] = useState([]);
   const [saveBttn, setSaveBttn] = useState([]);
   const toastRef = useRef(null);
+  const [isFlag,setIsFlag]=useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     getResumeData();
   }, []);
@@ -40,12 +43,13 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
       setValues(filterInterviewerResumtSumData);
       setForwardData(resumeData.result.resumereviewer);
       setStatusData(resumeData.result.status);
+      const isFlagArray = resumeData.result.candidateDetails.map((res) => res.candidateStatusId === 2 || res.candidateStatusId === 3);
+      setIsFlag(isFlagArray);
     }
     else{
       setValues(resumeData.result.candidateDetails);
       setForwardData(resumeData.result.resumereviewer);
       setStatusData(resumeData.result.status);
-       
     }
    
   }
@@ -62,9 +66,9 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
       <DropdownComponent
         optionLabel="status"
         optionValue="id"
-        // className="drop-width"
         className="w-full md:w-15rem"
         options={statusData}
+        disable={isFlag[options.rowIndex]}
         value={data.candidateStatusId}
         placeholder={"Select Status"}
         onChange={handleDropdownChange}
@@ -72,7 +76,7 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
     );
   };
  
- 
+  
  
   const MultiSelect = (data, options) => {
     const handleMultiSelectChange = (e) => {
@@ -100,13 +104,14 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
         placeholder={"Select Resume Reviwer"}
         onChange={handleMultiSelectChange}
         optionLabel="name"
+        disable={isFlag[options.rowIndex]}
         className="w-full md:w-15rem"
-      //placeholder="Select Interviewer"
-      // optionValue="employeeId"
+      
       />
     );
   };
   const updateData = async (rowData) => {
+    setIsLoading(true);
     const reviewedByEmployeeIds = rowData.resumeReviewerEmployeeIds;
     const name =  rowData.candidateName; // this because we are handling data in backend it not save as string
     const emailId = "string";
@@ -139,7 +144,9 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
       toastRef.current.showSuccessMessage("Update successfully!");
       setTimeout(() => {
         navigateTo("dashboard");
-      }, 1000);
+        setIsLoading(false);
+      }, 100);
+      
     } else {
       console.error("Request failed with status:", response.status);
       if (response.status === 400) {
@@ -147,6 +154,7 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
           "Bad request: " + response.url
         );
       }
+      setIsLoading(false);
     }
   };
  
@@ -165,7 +173,7 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
     };
     return (
       <InputTextareaComponent
-        
+      readOnly={isFlag[options.rowIndex]}
         value={data.reason}
         rows={2}  
         cols={55}
@@ -183,7 +191,6 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
           <ButtonC
             icon="pi pi-save"
             rounded
-            // outlined
             className="myaction_btn"
             onClick={() => {
               updateData(rowData);
@@ -212,6 +219,7 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
       //bodyClassName: "int-edit-col",
       bodyClassName: "my_resume-col",
     },
+    
     {
       field: "candidateName",
       header: "Name",
@@ -265,18 +273,19 @@ const MyResume = ({roleId =null, mrfId =  0, userId=null}) => {
           scrollable
           scrollHeight="flex"
         >
-          {columns.map((col) => (
+          {columns.map((col,index) => (
             <Column
               field={col.field}
               header={col.header}
               body={col.body}
- 
+ rowClassname={col.rowClassName}
               bodyClassName={"int-col " + col.bodyClassName}
               sortable={col.sortable}
             />
           ))}
  
         </DataTable>
+        {isLoading && <LoadingSpinner/>}
       </div>
     </div>
   );

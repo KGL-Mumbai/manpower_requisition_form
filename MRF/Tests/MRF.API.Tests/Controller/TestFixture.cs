@@ -12,7 +12,7 @@ namespace MRF.API.Test.Controllers
     {
         public Mock<IUnitOfWork> MockUnitOfWork { get; }
         public Mock<ILoggerService> MockLogger { get; }
-        public Mock<IEmailService> MockEmailService { get; }
+        public Mock<ISmtpEmailService> MockEmailService { get; }
         public CandidatedetailController Controller { get; }
 
         public Mock<IHostEnvironment> MockHostEnvironment { get; }
@@ -23,7 +23,7 @@ namespace MRF.API.Test.Controllers
         {
             MockUnitOfWork = new Mock<IUnitOfWork>();
             MockLogger = new Mock<ILoggerService>();
-            MockEmailService = new Mock<IEmailService>();
+            MockEmailService = new Mock<ISmtpEmailService>();
             MockHostEnvironment = new Mock<IHostEnvironment>();
             MockUserService = new Mock<IUserService>();
             Mockconfiguration = new Mock<IConfiguration>();

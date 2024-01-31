@@ -50,7 +50,7 @@ namespace MRF.DataAccess.Repository
         public  ISourcemasterRepository  Sourcemaster { get; private set; }
         public IEmailRecipientRepository EmailRecipient { get; private set; }
 
-
+        public  IInterviewevaluationHistoryRepository InterviewevaluationHistory { get; private set; }
         public UnitOfWork(Data.MRFDBContext db, IUserService userService)
         {
             _db = db;
@@ -97,6 +97,7 @@ namespace MRF.DataAccess.Repository
             PositionTitlemaster = new PositionTitleRepository(_db);
             Sourcemaster = new  SourceRepository(_db);
             EmailRecipient= new EmailRecipientRepository(_db);
+            InterviewevaluationHistory=new InterviewevaluationHistoryRepository(_db);
         }
         public void Save()
         {

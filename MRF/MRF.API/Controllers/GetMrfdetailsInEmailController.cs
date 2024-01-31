@@ -15,10 +15,10 @@ namespace MRF.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILoggerService _logger;
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _emailService;
         private readonly IHostEnvironment _hostEnvironment;
         private readonly IConfiguration _configuration;
-        public GetMrfdetailsInEmailController(IUnitOfWork unitOfWork, ILoggerService logger, IEmailService emailService, IHostEnvironment hostEnvironment,  IConfiguration configuration)
+        public GetMrfdetailsInEmailController(IUnitOfWork unitOfWork, ILoggerService logger, ISmtpEmailService emailService, IHostEnvironment hostEnvironment,  IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -66,7 +66,7 @@ namespace MRF.API.Controllers
             if (MrfStatus != null && EmpDetails != null)
                 try
                 {
-                    _emailService.SendEmailAsync(EmpDetails.Email, MrfStatus.Status, htmlBody); // TO DO : Discussion Required on Subject
+                    _emailService.SendEmail(EmpDetails.Email, MrfStatus.Status, htmlBody); // TO DO : Discussion Required on Subject
                 }
                 catch (Exception ex)
                 {
@@ -81,7 +81,7 @@ namespace MRF.API.Controllers
                 {
                     try
                     {
-                        _emailService.SendEmailAsync(emailReq.Email, emailMaster.Subject, emailMaster.Content);
+                        _emailService.SendEmail(emailReq.Email, emailMaster.Subject, emailMaster.Content);
                     }
                     catch (Exception ex)
                     {
@@ -105,8 +105,8 @@ namespace MRF.API.Controllers
             int StatusId = MrfStatusId;
             int RejectStatusId = 8;
             string strApprovalLink = $"{base_url}/approve?MrfId={MrfId}&EmpId={EmpId}&StatusId={StatusId}";
-            string strRejectionLink = $"{base_url}/approve?MrfId={MrfId}&EmpId={EmpId}&StatusId={RejectStatusId}";
-            string strByPassLink = $"{base_url}/approve?MrfId={MrfId}&EmpId={EmpId}&StatusId={StatusId}";
+            string strRejectionLink = $"{base_url}/Reject?MrfId={MrfId}&EmpId={EmpId}&StatusId={RejectStatusId}";
+            string strByPassLink = $"{base_url}/Bypass?MrfId={MrfId}&EmpId={EmpId}&StatusId={StatusId}";
             // Replace placeholders in HTML with data
             string messageBody = htmlBody
               .Replace("{ReferenceNo}", mrfdetailemail.ReferenceNo)

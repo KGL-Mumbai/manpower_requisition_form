@@ -19,9 +19,9 @@ namespace MRF.DataAccess.Repository
             _db.Interviewevaluation.Update(interviewevaluation);
         }
 
-        public List<Interviewevaluation> GetCandidateByCandidateid(int candidateId)
+        public List<Interviewevaluation> GetCandidateByCandidateid(int candidateId )
         {
-            IQueryable<Interviewevaluation> query = from interview in _db.Interviewevaluation where interview.CandidateId == candidateId
+            IQueryable<Interviewevaluation> query = from interview in _db.Interviewevaluation where interview.CandidateId == candidateId  
                                                     select interview;
             return query.ToList();
         }

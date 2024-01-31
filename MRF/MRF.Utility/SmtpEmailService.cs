@@ -10,7 +10,6 @@ namespace MRF.Utility
         private readonly IConfiguration _configuration;
         private readonly ILogger<SmtpEmailService> _logger;
         private readonly string senderEmail;
-        private readonly string password;
         private readonly string smtpServer;
         private readonly int smtpPort;
         private readonly SmtpClient smtpClient;
@@ -19,13 +18,11 @@ namespace MRF.Utility
         {
             _configuration = configuration;
             senderEmail = _configuration["SMTP:senderEmail"];
-            password = _configuration["SMTP:password"];
             smtpServer = _configuration["SMTP:Server"];
             smtpPort = Convert.ToInt32(_configuration["SMTP:Port"]);
             _logger = logger;
             smtpClient = new SmtpClient(smtpServer, smtpPort);
-            smtpClient.Credentials = new NetworkCredential(senderEmail, password);
-            smtpClient.EnableSsl = true;
+            smtpClient.UseDefaultCredentials = false;
         }
 
         public void SendEmail(string receiverEmail, string subject, string body, string? attachmentPath = null)

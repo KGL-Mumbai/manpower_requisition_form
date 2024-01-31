@@ -3,8 +3,7 @@ using MRF.DataAccess.Repository.IRepository;
 using MRF.Models.Models;
 using MRF.Utility;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Net.Mail;
-
+using Microsoft.Extensions.Configuration;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 
@@ -15,15 +14,21 @@ namespace MRF.API.Controllers
     public class EmailController : ControllerBase
     {
         private readonly IHostingEnvironment _hostingEnvironment;
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _smtpEmailService;
+        private readonly IEmailService _sendGridEmailService;
         private readonly ILoggerService _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public EmailController(IEmailService emailService, ILoggerService logger, IUnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment)
+        private readonly IConfiguration _configuration;
+        private readonly bool _useSendGrid;
+        public EmailController(ISmtpEmailService smtpEmailService, ILoggerService logger, IUnitOfWork unitOfWork, IHostingEnvironment hostingEnvironment, IConfiguration configuration, IEmailService sendGridEmailService)
         {
-            _emailService = emailService;
+            _smtpEmailService = smtpEmailService;
             _logger = logger;
             _unitOfWork = unitOfWork;
             _hostingEnvironment = hostingEnvironment;
+            _configuration = configuration;
+            _sendGridEmailService = sendGridEmailService;
+            _useSendGrid = _configuration.GetValue<bool>("FeatureToggles:UseSendGrid");
         }
 
         /// <summary>
@@ -40,9 +45,17 @@ namespace MRF.API.Controllers
             try
             {
                 emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == Status);
+
                 if (emailRequest != null)
                 {
-                    await _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    if (_useSendGrid) 
+                    {
+                       await _sendGridEmailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    }
+                    else
+                    {
+                        _smtpEmailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    }
                     _logger.LogInfo("Email sent successfully.");
                     return Ok("Email sent successfully.");
                 }

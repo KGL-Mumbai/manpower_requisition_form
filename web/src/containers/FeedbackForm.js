@@ -8,12 +8,15 @@ import { API_URL } from "../constants/config";
 import ButtonC from "./../components/Button";
 import { storageService } from "../constants/storage";
 import ToastMessages from "./../components/ToastMessages";
+import LoadingSpinner from "../components/LoadingSpinner";
 const FeedbackForm = ({ visible, onHide, onSubmit, count,candidateId=null, refreshParent })=> {
     
   const [interviewRound, setRound] = useState('');
   const [evaluationFeedBack,setevaluationFeedBack] = useState('');
   const [comments,Setcomments] = useState('');
   const [FeedData, setFeedData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [disablebtn, setDisablebtn] = useState(false);
 
   const interviewDetailsData = {
     id:0,
@@ -64,6 +67,8 @@ useEffect(() => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setDisablebtn(true);
     const evaluationFeedBack = Array.from({ length: FeedData.length }, (_, index) => formData[`ev${index + 1}`]).join(';');
     //const comments3 = Array.from({ length: FeedData.length }, (_, index) => formData[`comments${index + 1}`]).join(';');
  
@@ -95,7 +100,7 @@ const data = {
 			const responseData = response.json();
 			if (responseData.statusCode === 409) {
 			  toastRef.current.showConflictMessage(responseData.message);
-              
+        setDisablebtn(false);
 			} else {
 				
 			  toastRef.current.showSuccessMessage(
@@ -104,8 +109,10 @@ const data = {
               setTimeout(() => {
                 onHide();
                 refreshParent();
-              }, 2000);
+              }, 1000);
 			}
+      setIsLoading(false);
+     
 		  } else {
 			console.error("Request failed with status:", response.status);
 			const errorData = await response.text();
@@ -115,9 +122,13 @@ const data = {
 				"Bad request: " + response.url
 			  );
 			}
+      setIsLoading(false);
+      setDisablebtn(false);
 		  }}
 		} catch (error) {
 		  console.error("Error:", error);
+      setIsLoading(false);
+      setDisablebtn(false);
 		}
 	  };
       if (!FeedData || FeedData.length === 0) {
@@ -163,10 +174,11 @@ const data = {
     </div>
       
       <div className="dvAddFeedback">
-        <ButtonC label="Submit Feedback" className="w-15 bg-red-600 border-red-600 BtnAddFeedback" onClick={handleSubmit} outlined="true" />
+        <ButtonC label="Submit Feedback" disable={disablebtn} className="submit_btn_feedback" onClick={handleSubmit} outlined="true" />
       </div>
       <ToastMessages ref={toastRef} />
     </form>
+    {isLoading && <LoadingSpinner />}  
 	</Dialog>
   );
 };

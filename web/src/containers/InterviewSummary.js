@@ -26,6 +26,7 @@ import {
 } from "../constants/Utils";
 import "../css/InterviewSummary.css";
 import AssignmentUpload from "../containers/AssignmentUpload";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 
 //const roleId = 3;
@@ -59,6 +60,7 @@ const InterviewSummary = ({
 	const [selectedId, setSelectedId] = useState(null);
 	const [updateField, setupdateField] = useState("");
 	const [showUploadAssignment, setshowUploadAssignment] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [candidateInterviewDetails, setCandidateInterviewDetails] = useState(
 		{}
 	);
@@ -85,6 +87,7 @@ const InterviewSummary = ({
 	}, [mrfId]);
 
 	const update = async (data) => {
+		setIsLoading(true);
 		const id = data.interviewevaluationId;
 		const candidateId = data.candidateId;
 		const interviewerEmployeeIds = data.interviewerEmployeeIds;
@@ -134,6 +137,7 @@ const InterviewSummary = ({
 							"Interviewer updated successfully!"
 						);
 					}
+					setIsLoading(false);
 				} else {
 					console.error("Request failed with status:", response.status);
 					const errorData = await response.text();
@@ -143,6 +147,7 @@ const InterviewSummary = ({
 							"Bad request: " + response.url
 						);
 					}
+					setIsLoading(false);
 				}
 			} else {
 				let response = await putData(
@@ -159,6 +164,7 @@ const InterviewSummary = ({
 							" Interview status updated successfully!"
 						);
 					}
+					setIsLoading(false);
 				} else {
 					console.error("Request failed with status:", response.status);
 					const errorData = await response.text();
@@ -168,10 +174,12 @@ const InterviewSummary = ({
 							"Bad request: " + response.url
 						);
 					}
+					setIsLoading(false);
 				}
 			}
 		} catch (error) {
 			console.error("Error:", error);
+			setIsLoading(false);
 		}
 
 		refreshParentComponent();
@@ -307,7 +315,7 @@ const InterviewSummary = ({
 
 			return (
 				<MultiSelectDropdown
-					className="drop-width"
+					
 					id="interviewerEmployeeIds"
 					options={interviewerData}
 					value={arrayToObj(
@@ -318,6 +326,7 @@ const InterviewSummary = ({
 					onChange={handleMultiSelectChange}
 					optionLabel="name"
 					placeholder="Select Interviewer"
+					className="w-full md:w-20rem"
 					// optionValue="employeeId"
 					disable={MRF_STATUS_FOR_DISABLE(roleId, interview.mrfStatusId)}
 				/>
@@ -478,7 +487,7 @@ const InterviewSummary = ({
 					refreshParent={refreshParentComponent}
 				/>
 			)}
-
+{isLoading && <LoadingSpinner />}  
 			<ToastMessages ref={toastRef} />
 		</Dialog>
 	);

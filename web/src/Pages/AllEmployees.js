@@ -9,6 +9,7 @@ import ToastMessages from "../components/ToastMessages";
 import DropdownComponent from "../components/Dropdown";
 import InputTextCp from "../components/Textbox";
 import { FilterMatchMode } from "primereact/api";
+import LoadingSpinner from "../components/LoadingSpinner";
 export default function AllEmployees() {
   const [mergeDataa, setmergeData] = useState([{}]);
   const [roleId, setRoleId] = useState([]);
@@ -17,11 +18,13 @@ export default function AllEmployees() {
   const toastRef = useRef(null);
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
   });
 
   useEffect(() => {
+    setIsLoading(true);
     const onload = async () => {
       let merged = [];
       let options = [];
@@ -43,6 +46,7 @@ export default function AllEmployees() {
             roleid: matchingItem2 ? matchingItem2[1] : null,
           };
           merged.push(mergedItem);
+          setIsLoading(false);
         });
       };
 
@@ -71,6 +75,7 @@ export default function AllEmployees() {
     };
 
     onload();
+    
   }, []);
 
   const roleBodyTemplate = (rowData, options) => {
@@ -125,7 +130,7 @@ export default function AllEmployees() {
   };
   const header = renderHeader();
   const update = async (data) => {
-  
+    setIsLoading(true);
     const empdata = {
       name: data.name,
       email: data.email,
@@ -176,11 +181,14 @@ export default function AllEmployees() {
             toastRef.current.showSuccessMessage(
               "Role assigned/updated successfully!"
             );
+            setIsLoading(false);
           }
         } else {
           console.error("Request failed with status:", upEmp.status);
           if (upEmp.status === 400) {
             toastRef.current.showBadRequestMessage("Bad request: " + upEmp.url);
+            setIsLoading(false);
+
           }
         }
       } else {
@@ -194,6 +202,8 @@ export default function AllEmployees() {
             toastRef.current.showSuccessMessage(
               "Role assigned/updated successfully!"
             );
+            setIsLoading(false);
+
           }
         } else {
           console.error("Request failed with status:", response.status);
@@ -203,11 +213,15 @@ export default function AllEmployees() {
             toastRef.current.showBadRequestMessage(
               "Bad request: " + response.url
             );
+            setIsLoading(false);
+
           }
         }
       }
     } catch (error) {
       console.error("Error:", error);
+      setIsLoading(false);
+
     }
   };
   const actionBodyTemplate = (rowData, options) => {
@@ -233,6 +247,7 @@ export default function AllEmployees() {
     {
       field: "empcode",
       header: "Emp ID",
+      sortable: true,
     },
     {
       field: "name",
@@ -252,14 +267,14 @@ export default function AllEmployees() {
     {
       header: "Action",
       body: actionBodyTemplate,
-      bodyClassName: "int-edit-col",
     },
   ];
+  
   return (
     <div className="my-req">
       <>
         <h3 className="my-req-title">All Employees</h3>
-        <div className="req-table">
+        <div className="req-table"> {isLoading && <LoadingSpinner />}
           <DataTable
             header={header}
             value={mergeDataa}
@@ -270,6 +285,7 @@ export default function AllEmployees() {
             scrollable
             scrollHeight="flex"
           >
+            
             {columns.map((col, index) => (
               <Column
                 key={index}
