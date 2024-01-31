@@ -86,28 +86,47 @@ namespace MRF.API.Controllers
             {
 
                 List<Interviewevaluation>? obj = _unitOfWork.Interviewevaluation.GetCandidateByCandidateid(request.CandidateId);
-                foreach (Interviewevaluation inter in obj)
+                var employeeIds = request.interviewerEmployeeIds.Split(',');
+
+                // Remove employeeIds which exist in obj but not in request.interviewerEmployeeIds
+                var employeeIdsInObj = obj.Select(item => item.InterviewerId.ToString()).ToList();
+                var employeeIdsToRemove = employeeIdsInObj.Except(employeeIds).Select(int.Parse).ToList();
+
+                foreach (var employeeIdToRemove in employeeIdsToRemove)
                 {
-                    _unitOfWork.Interviewevaluation.Remove(inter);
-                    _unitOfWork.Save();
+                    var itemToRemove = obj.FirstOrDefault(item => item.InterviewerId == employeeIdToRemove);
+                    if (itemToRemove != null)
+                    {
+                        try
+                        {
+                            _unitOfWork.Interviewevaluation.Remove(itemToRemove);
+                            _unitOfWork.Save();
+                        }catch(Exception ex)
+                        {
+
+                        }
+                    }
                 }
 
-                var employeeIds = request.interviewerEmployeeIds.Split(',');
                 foreach (var employeeId in employeeIds)
                 {
-                    var interviewevaluation1 = new Interviewevaluation();
-                    interviewevaluation1.InterviewerId = int.Parse(employeeId);
-                    interviewevaluation1.CandidateId = request.CandidateId;
-                    interviewevaluation1.EvalutionStatusId = request.EvalutionStatusId == 0 ? null : request.EvalutionStatusId;
-                    interviewevaluation1.EvaluationDateUtc = request.EvaluationDateUtc;
-                    interviewevaluation1.FromTimeUtc = request.FromTimeUtc;
-                    interviewevaluation1.ToTimeUtc = request.ToTimeUtc;
-                    interviewevaluation1.CreatedByEmployeeId = request.CreatedByEmployeeId;
-                    interviewevaluation1.CreatedOnUtc = request.CreatedOnUtc;
-                    interviewevaluation1.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
-                    interviewevaluation1.UpdatedOnUtc = request.UpdatedOnUtc;
-                    _unitOfWork.Interviewevaluation.Add(interviewevaluation1);
-                    _unitOfWork.Save();
+                    bool employeeIdExists = obj.Any(item => item.InterviewerId ==Convert.ToInt32(employeeId));
+                    if (!employeeIdExists)
+                    {
+                        var interviewevaluation1 = new Interviewevaluation();
+                        interviewevaluation1.InterviewerId = int.Parse(employeeId);
+                        interviewevaluation1.CandidateId = request.CandidateId;
+                        interviewevaluation1.EvalutionStatusId = request.EvalutionStatusId == 0 ? null : request.EvalutionStatusId;
+                        interviewevaluation1.EvaluationDateUtc = request.EvaluationDateUtc;
+                        interviewevaluation1.FromTimeUtc = request.FromTimeUtc;
+                        interviewevaluation1.ToTimeUtc = request.ToTimeUtc;
+                        interviewevaluation1.CreatedByEmployeeId = request.CreatedByEmployeeId;
+                        interviewevaluation1.CreatedOnUtc = request.CreatedOnUtc;
+                        interviewevaluation1.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
+                        interviewevaluation1.UpdatedOnUtc = request.UpdatedOnUtc;
+                        _unitOfWork.Interviewevaluation.Add(interviewevaluation1);
+                        _unitOfWork.Save();
+                    }
                 }
             }
 

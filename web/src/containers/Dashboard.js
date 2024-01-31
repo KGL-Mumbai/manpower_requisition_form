@@ -7,7 +7,7 @@ import InterviewSummary from "../containers/InterviewSummary";
 import DashMrfStatus from "../components/DashMrfStatus";
 import ResumeSummary from "../containers/ResumeSummary";
 import DashBoardDataTable from "../components/DashBoardDataTable";
- 
+import InterviewSummaryAllStatus from "../containers/InterviewSummaryAllStatus";
 import {
   filterSelectedColumn,
   filterResultGroupByCandidatestatus,
@@ -25,7 +25,7 @@ function Dashboard({ roleId, userId }) {
   const [mrfStatusPopupId, setrfStatusPopupId] = useState(null);
   const [resumePopup, setResumePopup] = useState(false);
   const [resumePopupId, setResumePopupId] = useState(null);
- 
+  const [InterviewStatus, setInterviewStatusPopup] = useState(false);
   useEffect(() => {
     getSummaryData();
   }, []);
@@ -96,6 +96,10 @@ function Dashboard({ roleId, userId }) {
         </a>
       </div>
     );
+  };
+
+  const handlePopupOpen = () => {
+    setInterviewStatusPopup(true);
   };
    let resumeSummaryColums = [
     {
@@ -251,13 +255,28 @@ function Dashboard({ roleId, userId }) {
               <DashBoardDataTable
                 value={interviewSummaryTableData}
                 column={interviewSummaryColums}
-                headerHeading={<h4 >Interview Status</h4>}
+                headerHeading={<>
+                 <h4>
+        Interview Status{" "}
+        <span style={{ marginLeft: "120px" }}>
+          <a href="#" onClick={handlePopupOpen}>
+            More status
+          </a>
+        </span>
+      </h4> 
+                </>}
                 table_title={"Interview Summary"}
               />
               <InterviewSummary
                 visible={interviewPopup}
                 onHide={() => setInterviewPopup(false)}
                 mrfId={interviewPopupId}
+                roleId={roleId}
+                userId={userId}
+              />
+              <InterviewSummaryAllStatus
+                visible={InterviewStatus}
+                onHide={() => setInterviewStatusPopup(false)}
                 roleId={roleId}
                 userId={userId}
               />
