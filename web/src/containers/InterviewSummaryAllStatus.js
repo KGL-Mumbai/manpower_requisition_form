@@ -89,7 +89,7 @@ function InterviewSummaryAllStatus({ roleId, userId, visible, onHide }) {
     scrollable={true}
     value={interviewSummary}
   >
-    <Column field="referenceno" header="Reference No" body={mrfIdInterviewRefernceTemplate}/>
+    <Column field="referenceno" header="MRF ID" body={mrfIdInterviewRefernceTemplate}/>
     <Column field="positionTitle" header="Position Title" />
    {interviewSummaryColumns}
   </DataTable>
