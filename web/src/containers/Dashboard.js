@@ -256,15 +256,18 @@ function Dashboard({ roleId, userId }) {
                 value={interviewSummaryTableData}
                 column={interviewSummaryColums}
                 headerHeading={<>
-                 <h4>
-        Interview Status{" "}
-        <span style={{ marginLeft: "120px" }}>
-          <a href="#" onClick={handlePopupOpen}>
-            More status
-          </a>
-        </span>
-      </h4> 
-                </>}
+                  <h4 style={{ margin:"0px", marginLeft: "150px", padding:"0px"}}>
+         Interview Status
+         <span style={{ marginLeft: "120px" ,color:"#d32f2e"}}>
+           <a href="#" style={{ marginLeft: "120px" ,color:"#d32f2e"}} onClick={handlePopupOpen}>
+             More status<span style={{fontSize:"15px",}}>&gt;</span>
+           </a>
+         </span>
+       </h4> 
+                 </>}
+
+
+               
                 table_title={"Interview Summary"}
               />
               <InterviewSummary
@@ -284,7 +287,7 @@ function Dashboard({ roleId, userId }) {
               <DashBoardDataTable
                value={resumeSummary}
                column={resumeSummaryColums}
-               headerHeading={<h4 >Resume Status</h4>}
+               headerHeading={<h4 className="resume_status_dash_table_heading">Resume Status</h4>}
                table_title={"Resume Summary"}
              />
              <ResumeSummary  visible={resumePopup}

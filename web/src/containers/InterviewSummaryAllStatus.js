@@ -16,18 +16,17 @@ function InterviewSummaryAllStatus({ roleId, userId, visible, onHide }) {
   }, []);
 
   async function getSummaryData() {
-    const interviewSummaryData = await getData( API_URL.INTERVIEW_SUMMARY +"?Count=0&roleId=" +        roleId +
+    const interviewSummaryData = await getData(
+      API_URL.INTERVIEW_SUMMARY +
+        "?Count=0&roleId=" +
+        roleId +
         "&userId=" +
         userId
     );
     setInterviewSummary(interviewSummaryData.result);
   }
-  console.log(interviewSummary)
-
- 
 
   const generateColumns = (resultGroups) => {
-    
     const dynamicColumns = resultGroups.map((group, groupIndex) => {
       const field = `status_${groupIndex}`;
 
@@ -35,8 +34,15 @@ function InterviewSummaryAllStatus({ roleId, userId, visible, onHide }) {
         <Column
           key={field}
           field={field}
-          header={group.candidatestatus}
-          body={(rowData) => filterSelectedColumn(rowData,group.candidatestatus )}
+          header={
+            <h4 className="all_status_table_heading">
+              {group.candidatestatus}
+            </h4>
+          }
+          body={(rowData) =>
+            filterSelectedColumn(rowData, group.candidatestatus)
+          }
+          bodyClassName={"interview_all_status_body"}
         />
       );
     });
@@ -67,12 +73,13 @@ function InterviewSummaryAllStatus({ roleId, userId, visible, onHide }) {
       ? generateColumns(interviewSummary[0].resultGroups)
       : [];
 
-      
-
   return (
     <Dialog
       header={
-        <div className="dashboard_body_right" style={{ width: "100%" }}>
+        <div
+          className="dashboard_body_right"
+          style={{ width: "100%", fontWeight: "bold", color: "#000000" }}
+        >
           Interview Summary
         </div>
       }
@@ -81,26 +88,34 @@ function InterviewSummaryAllStatus({ roleId, userId, visible, onHide }) {
       draggable={false}
       className="int-card"
     >
-
-         <DataTable
-    paginator={true}
-    rows={10}
-    rowsPerPageOptions={[5, 10, 20]}
-    scrollable={true}
-    value={interviewSummary}
-  >
-    <Column field="referenceno" header="MRF ID" body={mrfIdInterviewRefernceTemplate}/>
-    <Column field="positionTitle" header="Position Title" />
-   {interviewSummaryColumns}
-  </DataTable>
-  <InterviewSummary
-                visible={interviewPopup}
-                onHide={() => setInterviewPopup(false)}
-                mrfId={interviewPopupId}
-                roleId={roleId}
-                userId={userId}
-              />
-  </Dialog>
+      <DataTable
+        paginator={interviewSummary.length > 5}
+        rows={5}
+        scrollable={true}
+        value={interviewSummary}
+        scrollHeight="flex"
+        className="all_interview"
+      >
+        <Column
+          field="referenceno"
+          header="MRF ID"
+          body={mrfIdInterviewRefernceTemplate}
+        />
+        <Column
+          field="positionTitle"
+          header="Position Title"
+          bodyClassName={"interview_all_status_body"}
+        />
+        {interviewSummaryColumns}
+      </DataTable>
+      <InterviewSummary
+        visible={interviewPopup}
+        onHide={() => setInterviewPopup(false)}
+        mrfId={interviewPopupId}
+        roleId={roleId}
+        userId={userId}
+      />
+    </Dialog>
   );
 }
 

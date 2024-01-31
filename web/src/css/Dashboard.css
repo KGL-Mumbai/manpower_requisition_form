@@ -224,7 +224,7 @@ table {
   text-decoration: none;
 }
 
-.dashboard_body_right h4{
+.dashboard_body_right .resume_status_dash_table_heading{
 
 padding-left: 45px;
 width: 400px;
