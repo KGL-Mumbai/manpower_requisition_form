@@ -88,25 +88,50 @@ namespace MRF.API.Controllers
 
             if (!string.IsNullOrEmpty(request.interviewerEmployeeIds))
             {
+
+                List<Interviewevaluation>? obj = _unitOfWork.Interviewevaluation.GetCandidateByCandidateid(request.CandidateId);
                 var employeeIds = request.interviewerEmployeeIds.Split(',');
+
+                // Remove employeeIds which exist in obj but not in request.interviewerEmployeeIds
+                var employeeIdsInObj = obj.Select(item => item.InterviewerId.ToString()).ToList();
+                var employeeIdsToRemove = employeeIdsInObj.Except(employeeIds).Select(int.Parse).ToList();
+
+                foreach (var employeeIdToRemove in employeeIdsToRemove)
+                {
+                    var itemToRemove = obj.FirstOrDefault(item => item.InterviewerId == employeeIdToRemove);
+                    if (itemToRemove != null)
+                    {
+                        try
+                        {
+                            _unitOfWork.Interviewevaluation.Remove(itemToRemove);
+                            _unitOfWork.Save();
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+                }
 
                 foreach (var employeeId in employeeIds)
                 {
-
-                    var interviewevaluation1 = new Interviewevaluation();
-                    interviewevaluation1.InterviewerId = int.Parse(employeeId);
-                    interviewevaluation1.CandidateId = request.CandidateId;
-                    interviewevaluation1.EvalutionStatusId = request.EvalutionStatusId == 0 ? null : request.EvalutionStatusId;
-                    interviewevaluation1.EvaluationDateUtc = request.EvaluationDateUtc;
-                    interviewevaluation1.FromTimeUtc = request.FromTimeUtc;
-                    interviewevaluation1.ToTimeUtc = request.ToTimeUtc;
-                    interviewevaluation1.CreatedByEmployeeId = request.CreatedByEmployeeId;
-                    interviewevaluation1.CreatedOnUtc = request.CreatedOnUtc;
-                    interviewevaluation1.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
-                    interviewevaluation1.UpdatedOnUtc = request.UpdatedOnUtc;
-                    _unitOfWork.Interviewevaluation.Add(interviewevaluation1);
-                    _unitOfWork.Save();
-
+                    bool employeeIdExists = obj.Any(item => item.InterviewerId == Convert.ToInt32(employeeId));
+                    if (!employeeIdExists)
+                    {
+                        var interviewevaluation1 = new Interviewevaluation();
+                        interviewevaluation1.InterviewerId = int.Parse(employeeId);
+                        interviewevaluation1.CandidateId = request.CandidateId;
+                        interviewevaluation1.EvalutionStatusId = request.EvalutionStatusId == 0 ? null : request.EvalutionStatusId;
+                        interviewevaluation1.EvaluationDateUtc = request.EvaluationDateUtc;
+                        interviewevaluation1.FromTimeUtc = request.FromTimeUtc;
+                        interviewevaluation1.ToTimeUtc = request.ToTimeUtc;
+                        interviewevaluation1.CreatedByEmployeeId = request.CreatedByEmployeeId;
+                        interviewevaluation1.CreatedOnUtc = request.CreatedOnUtc;
+                        interviewevaluation1.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
+                        interviewevaluation1.UpdatedOnUtc = request.UpdatedOnUtc;
+                        _unitOfWork.Interviewevaluation.Add(interviewevaluation1);
+                        _unitOfWork.Save();
+                    }
                 }
             }
 
@@ -119,7 +144,9 @@ namespace MRF.API.Controllers
                 interviewevaluation.FromTimeUtc = request.FromTimeUtc;
                 interviewevaluation.EvalutionStatusId = request.EvalutionStatusId;
                 interviewevaluation.EvaluationDateUtc = request.EvaluationDateUtc;
+                interviewevaluation.FromTimeUtc = request.FromTimeUtc;
                 interviewevaluation.ToTimeUtc = request.ToTimeUtc;
+                interviewevaluation.EvalutionStatusId = request.EvalutionStatusId;
                 interviewevaluation.CreatedByEmployeeId = request.CreatedByEmployeeId;
                 interviewevaluation.CreatedOnUtc = request.CreatedOnUtc;
                 interviewevaluation.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
@@ -145,7 +172,7 @@ namespace MRF.API.Controllers
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Description = "Service Unavailable")]
         public InterviewevaluationResponseModel Put(int id, [FromBody] InterviewevaluationRequestModel request)
         {
-            
+
             List<Interviewevaluation> record = _unitOfWork.Interviewevaluation.GetA(u => u.CandidateId == request.CandidateId).ToList();
             InterviewevaluationHistoryController controller = new InterviewevaluationHistoryController(_unitOfWork, _logger);
             controller.PostForInterview(record);
@@ -155,7 +182,7 @@ namespace MRF.API.Controllers
                 {
 
                     var existingRecord = record[i];
-                   
+
 
                     if (existingRecord != null)
                     {
@@ -173,7 +200,7 @@ namespace MRF.API.Controllers
                         _unitOfWork.Save();
 
                         _responseModel.Id = existingRecord.Id;
-                      
+
                     }
                     else
                     {
