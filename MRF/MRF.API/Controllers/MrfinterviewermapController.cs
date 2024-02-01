@@ -19,9 +19,9 @@ namespace MRF.API.Controllers
         private ResponseDTO _response;
         private MrfinterviewermapResponseModel _responseModel;
         private readonly ILoggerService _logger;
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _emailService;
         private readonly IHostEnvironment _hostEnvironment;
-        public MrfinterviewermapController(IUnitOfWork unitOfWork, ILoggerService logger, IEmailService emailService, IHostEnvironment hostEnvironment)
+        public MrfinterviewermapController(IUnitOfWork unitOfWork, ILoggerService logger, ISmtpEmailService emailService, IHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _response = new ResponseDTO();
@@ -106,7 +106,7 @@ namespace MRF.API.Controllers
                 emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Interviewer added");
                 if (emailRequest != null)
                 {
-                    _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                 }
             }
            
@@ -172,7 +172,7 @@ namespace MRF.API.Controllers
                     emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Interviewer deleted");
                     if (emailRequest != null)
                     {
-                        _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                        _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                     }
                 }
 
@@ -206,7 +206,7 @@ namespace MRF.API.Controllers
                     emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Interviewer deleted");
                     if (emailRequest != null)
                     {
-                        _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                        _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                     }
                 }
 

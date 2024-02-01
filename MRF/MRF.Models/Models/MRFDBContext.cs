@@ -72,6 +72,8 @@ public partial class MRFDBContext : DbContext
     public virtual DbSet<MrfLastNumber> MrfLastNumber { get; set; }
     public virtual DbSet<MrfEmailApproval> MrfEmailApproval { get; set; }
     public virtual DbSet<mrfDetailsStatusHistory> mrfDetailsStatusHistory { get; set; }
+
+    public virtual DbSet<InterviewevaluationHistory> InterviewevaluationHistory { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySql("server=localhost;database=mrf;user=root;password=Info@2023", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.15-mysql"));
@@ -764,7 +766,40 @@ public partial class MRFDBContext : DbContext
             entity.Property(e => e.LastNumber).HasColumnType("int(11)");
 
         });
+        modelBuilder.Entity<InterviewevaluationHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
 
+            entity.ToTable("interviewevaluationHistory");
+
+            entity.HasIndex(e => e.CandidateId, "FK_CandidateMasterInterviewEvaluation");
+
+            //entity.HasIndex(e => e.EvaluationFeedbackId, "FK_EvaluationFeedbackMasterInterviewEvaluation");
+
+            //entity.HasIndex(e => e.EvaluationId, "FK_EvaluationMasterInterviewEvaluation");
+
+            entity.HasIndex(e => e.EvalutionStatusId, "FK_EvaluationStatusMasterInterviewEvaluation");
+
+            entity.HasIndex(e => e.InterviewerId, "FK_UserDetailsInterviewEvaluation");
+
+            entity.Property(e => e.Id).HasColumnType("int(11)");
+            entity.Property(e => e.CandidateId).HasColumnType("int(11)");
+            entity.Property(e => e.CreatedByEmployeeId).HasColumnType("int(11)");
+            entity.Property(e => e.CreatedOnUtc)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            //entity.Property(e => e.EvaluationFeedbackId).HasColumnType("int(11)");
+            //entity.Property(e => e.EvaluationId).HasColumnType("int(11)");
+            entity.Property(e => e.EvalutionStatusId).HasColumnType("int(11)");
+            //entity.Property(e => e.FeedbackAsDraft).HasMaxLength(100);
+            entity.Property(e => e.FromTimeUtc).HasColumnType("time");
+            entity.Property(e => e.InterviewerId).HasColumnType("int(11)");
+            entity.Property(e => e.ToTimeUtc).HasColumnType("time");
+            entity.Property(e => e.UpdatedByEmployeeId).HasColumnType("int(11)");
+            entity.Property(e => e.UpdatedOnUtc)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+        });
 
         modelBuilder.Entity<MrfEmailApproval>(entity =>
         {

@@ -13,12 +13,14 @@ import {
   
 } from "../constants/config";
 import DropdownComponent from "../components/Dropdown";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const AddCandidate = (reqId) => {
   const toastRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [submitBtnDisable, setSubmitBtnDisable] = useState(false);
   const [mask, setMask] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleFileChange = (event) => {
     setSelectedFile(event);
   };
@@ -93,6 +95,7 @@ const fectData=async()=>{
       formatAndShowErrorMessage(emptyFieldss);
       setSubmitBtnDisable(false);
     } else {
+      setIsLoading(true);
       const fileUploadData = new FormData();
       fileUploadData.append("file", selectedFile);
       try {
@@ -135,6 +138,7 @@ const fectData=async()=>{
                 toastRef.current.showBadRequestMessage(
                   "Duplicate Candidate Name"
                 );
+                setIsLoading(false);
                 setSubmitBtnDisable(false);
               } else {
                 toastRef.current.showSuccessMessage(
@@ -142,7 +146,8 @@ const fectData=async()=>{
                 );
                 setTimeout(() => {
                   navigateTo("my_requisition");
-                }, 2000);
+                }, 1000);
+                setIsLoading(false);
               }
             } else {
               console.error("Request failed with status:", response.status);
@@ -150,6 +155,7 @@ const fectData=async()=>{
                 toastRef.current.showBadRequestMessage(
                   "Bad request: " + response.url
                 );
+                setIsLoading(false);
                 setSubmitBtnDisable(false);
               }
             }
@@ -161,6 +167,7 @@ const fectData=async()=>{
             toastRef.current.showBadRequestMessage(
               "you have to upload Resume!"
             );
+            setIsLoading(false);
             setSubmitBtnDisable(false);
           }
           console.error(
@@ -195,7 +202,7 @@ const fectData=async()=>{
   
   return (
     <div>
-      <div className="flex bg-gray-200">
+      <div className="flex create_requistion">
         <div className="flex flex-column gap-2 w-full p-3 py-2 h-full ">
           <div
             className="border-round-lg bg-white text-black-alpha-90 p-3 flex flex-column justify-content-between"
@@ -317,6 +324,7 @@ const fectData=async()=>{
                 disable={submitBtnDisable}
                 onClick={() => handleSubmit()}
               />
+              {isLoading && <LoadingSpinner />}  
               <ToastMessages ref={toastRef} />
             </div>
           </div>

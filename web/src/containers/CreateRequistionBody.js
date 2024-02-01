@@ -51,6 +51,7 @@ const CreateRequisitionBody = ({
   const dispatch = useDispatch();
   const toastRef = useRef(null);
   const [formData, setFormData] = useState();
+  const [emailError, setEmailError] = useState(false);
 
   const OnLoad = async () => {
     const result = await getDataAPI(API_URL.GET_CREATE_REQUISITION_DROPDOWN);
@@ -65,22 +66,17 @@ const CreateRequisitionBody = ({
   useEffect(() => {
     // Fetch the data for all the dropdowns
     OnLoad();
-    if (getReqId) {
+    const GetData=async()=>{
+      if(getReqId) {
+        let result=await getDataAPI(API_URL.GET_CREATE_REQUISITION_DEATILS + getReqId);
+        let response=await result.json();
+        setFormData({ ...formData, ...response });
+      } else{
+        setFormData(FORM_SCHEMA_CR);
+      }
 
-      
-      const apiUrl = API_URL.GET_CREATE_REQUISITION_DEATILS + getReqId;
-      fetch(apiUrl)
-        .then((response) => response.json())
-        .then((response) => {
-          setFormData({ ...formData, ...response });
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error);
-        });
-    } else {
-      setFormData(FORM_SCHEMA_CR);
     }
-
+    GetData();
     applySettingsBasedOnRoleAndStatus(
       getReqRoleId,
       mrfStatusId,
@@ -178,7 +174,9 @@ const CreateRequisitionBody = ({
     const emailValue=formData.emailId;
     if (!emailRegex.test(emailValue)) {
       toastRef.current.showWarrningMessage("Invalid Email format");
-      // setSubmitBtnDisable(true);
+      setEmailError(true);
+    }else{
+      setEmailError(false);
     }
     
   };
@@ -213,23 +211,11 @@ const CreateRequisitionBody = ({
 
  
 
-  const fetchSubDepartments = (selectedDepartment) => {
-    const apiUrl =
-      API_URL.GET_CREATE_REQUISITION_DEPARTMENT + selectedDepartment;
-    fetch(apiUrl)
-      .then((response) => response.json())
-      .then((responseData) => {
-        if (Array.isArray(responseData.result)) {
-          const data = responseData.result;
+  const fetchSubDepartments = async(selectedDepartment) => {
 
-          setSubDepartments(data);
-        } else {
-          console.error("API response result is not an array:", responseData);
-        }
-      })
-      .catch((error) => {
-        console.error("Fetch error:", error);
-      });
+    let result=await getDataAPI(API_URL.GET_CREATE_REQUISITION_DEPARTMENT + selectedDepartment);
+    let response=await result.json();
+    setSubDepartments(response.result);
   };
 
   const AddInDropdwon = async (Name, PosORPr) => {
@@ -819,6 +805,8 @@ const CreateRequisitionBody = ({
                           employeeCode: e.target.value,
                         })
                       }
+                      maxLength={6}
+                      useGrouping={false}
                       value={formData.employeeCode}
                       disable={commonSettings.setReadOnly}
                     />
@@ -1760,6 +1748,7 @@ const CreateRequisitionBody = ({
                         <MrfPartialStatus
                           mrfId={getReqId}
                           mrfStatusId={1}
+                          emailErrors={emailError}
                           label={"SAVE AS DRAFT"}
                           className={"save_draft_btn"}
                           // className={"w-20 px-7 bg-red-600 border-red-600"}
@@ -1773,6 +1762,7 @@ const CreateRequisitionBody = ({
                           mrfStatusId={2}
                           label={"SUBMIT"}
                           className={"submit_btn"}
+                          emailErrors={emailError}
                           message={
                             "After submitting you won't be able to edit the MRF details"
                           }
@@ -1942,6 +1932,7 @@ const CreateRequisitionBody = ({
                       message={"Do you want to Submit this MRF as Draft?"}
                       formData={formData}
                       roleID={getReqRoleId}
+                      emailErrors={emailError}
                     />
 
                     <MrfPartialStatus
@@ -1954,6 +1945,7 @@ const CreateRequisitionBody = ({
                       }
                       formData={formData}
                       roleID={roleId}
+                      emailErrors={emailError}
                     />
                   </>
                 );

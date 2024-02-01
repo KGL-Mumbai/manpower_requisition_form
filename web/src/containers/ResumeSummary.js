@@ -10,6 +10,7 @@ import MultiSelectDropdown from "../components/multiselectDropdown";
 import { API_URL, FILE_URL, MRF_STATUS_FOR_DISABLE, ROLES } from "../constants/config";
 import { changeDateFormat, getDataAPI, putData, strToArray } from "../constants/Utils";
 import { InputTextarea } from "primereact/inputtextarea";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ResumeSummary = ({
   roleId = null,
@@ -23,6 +24,7 @@ const ResumeSummary = ({
   const [resumeReviewer, setResumeReviewer] = useState([]);
   const [saveBttn, setSaveBttn] = useState([]);
   const toastRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     
@@ -31,8 +33,6 @@ const ResumeSummary = ({
 
       let result=await getDataAPI(`${API_URL.RESUME_SUMMARY_POPUP}id=${mrfId}&DashBoard=${dashboard}&roleId=${roleId}&userId=${userId}`)
 let response=await result.json();
-console.log(response)
-     
           if (roleId === ROLES.interviewer) {
             var filterInterviewerResumtSumData = [];
             response.result.resumeDetails.map((res) => {
@@ -149,7 +149,7 @@ console.log(response)
     return <Button icon="pi pi-save" className="action_btn" disabled />;
   };
   const update = async (data) => {
-    console.log(data);
+    setIsLoading(true);
     const resumeRevierInArray = data.resumeReviewerEmployeeIds;
     const reviewedByEmployeeIds = resumeRevierInArray.toString();
     const name = "string"; // this because we are handling data in backend it not save as string
@@ -193,6 +193,7 @@ console.log(response)
             "Resume Reviewers updated successfully!"
           );
         }
+        setIsLoading(false);
       } else {
         console.error("Request failed with status:", response.status);
         const errorData = await response.text();
@@ -202,9 +203,11 @@ console.log(response)
             "Bad request: " + response.url
           );
         }
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
+      setIsLoading(false);
     }
   };
 
@@ -320,8 +323,9 @@ console.log(response)
 
   return (
     <>
+    
       {/* if roleId is equal to this then it will show dialog box otherwise show data table*/}
-      {(roleId === ROLES.hr || roleId === ROLES.mrfOwner || roleId === ROLES.interviewer) && (
+      {(roleId != ROLES.resumeReviwer) && (
         <>
           <Dialog
             header={
@@ -360,6 +364,8 @@ console.log(response)
           />
         ))}
       </DataTable>
+      {isLoading && <LoadingSpinner />}  
+      <ToastMessages ref={toastRef} />
           </Dialog>
         </>
       )}

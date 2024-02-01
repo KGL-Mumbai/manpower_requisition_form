@@ -8,21 +8,26 @@ namespace MRF.Web.Controllers
 {
     public class RequestController : Controller
     {
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _emailService;
         private readonly IConfiguration _configuration;
-        public RequestController(IEmailService emailService, IConfiguration configuration)
+        private readonly ILoggerService _logger;
+        public RequestController(ISmtpEmailService emailService, IConfiguration configuration, ILoggerService logger)
         {
             _emailService = emailService;
             _configuration = configuration;
+            _logger = logger;
         }
         public async Task<IActionResult> Approve([FromQuery(Name = "MrfId")] int mrfID, [FromQuery(Name = "StatusId")] int mrfStatusId, [FromQuery(Name = "EmpId")] int updatedByEmployeeId)
         {
             try
             {
+                _logger.LogInfo("Entered into Approve method");
+                
                 HttpResponseMessage response = await ChangeMrfStatusAsync(mrfID, mrfStatusId, updatedByEmployeeId);
+                _logger.LogInfo("response code = " + response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
                 {
-                    _emailService.SendEmailAsync("manish.partey@kwglobal.com", "Test", "Test");
+                   // _emailService.SendEmail("manish.partey@kwglobal.com", "Test", "Test");
                     return Ok("MRF has been approved successfully!");
                 }
                 else
@@ -40,17 +45,22 @@ namespace MRF.Web.Controllers
         {
             try
             {
+                _logger.LogInfo("mrfID = " + mrfID);
+                _logger.LogInfo("mrfStatusId = " + mrfStatusId);
+                _logger.LogInfo("updatedByEmployeeId = " + updatedByEmployeeId);
                 using (var httpClientHandler = new HttpClientHandler())
                 {
+                    _logger.LogInfo("ServerCertificateCustomValidationCallback - Start");
                     httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-
+                    _logger.LogInfo("ServerCertificateCustomValidationCallback - End");
                     using (var client = new HttpClient(httpClientHandler))
                     {
+                        _logger.LogInfo("GetAccessToken - Start");
                         var accessToken = GetAccessToken();
-                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
+                        _logger.LogInfo("GetAccessToken - End");
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);                        
                         var apiUrl = _configuration["AppUrl"] + mrfID;
-
+                        _logger.LogInfo("apiUrl = " + apiUrl);
                         var requestBody = new
                         {
                             mrfID = mrfID,
@@ -60,9 +70,10 @@ namespace MRF.Web.Controllers
                         };
 
                         string jsonPayloadString = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
+                        _logger.LogInfo("jsonPayloadString = " + jsonPayloadString);
                         StringContent content = new StringContent(jsonPayloadString, Encoding.UTF8, "application/json");
                         HttpResponseMessage response = await client.PutAsync(apiUrl, content);
-
+                        _logger.LogInfo("response = " + response);
                         return response;
                     }
                 }
@@ -108,8 +119,29 @@ namespace MRF.Web.Controllers
                 HttpResponseMessage response = await ChangeMrfStatusAsync(mrfID, mrfStatusId, updatedByEmployeeId);
                 if (response.IsSuccessStatusCode)
                 {
-                    _emailService.SendEmailAsync("manish.partey@kwglobal.com", "Test", "Test");
+                   // _emailService.SendEmail("manish.partey@kwglobal.com", "Test", "Test");
                     return Ok("MRF has been rejected successfully!");
+                }
+                else
+                {
+                    return BadRequest(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> Bypass([FromQuery(Name = "MrfId")] int mrfID, [FromQuery(Name = "StatusId")] int mrfStatusId, [FromQuery(Name = "EmpId")] int updatedByEmployeeId)
+        {
+            try
+            {
+                HttpResponseMessage response = await ChangeMrfStatusAsync(mrfID, mrfStatusId, updatedByEmployeeId);
+                if (response.IsSuccessStatusCode)
+                {
+                   // _emailService.SendEmail("manish.partey@kwglobal.com", "Test", "Test");
+                    return Ok("MRF has been bypassed successfully!");
                 }
                 else
                 {

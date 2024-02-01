@@ -18,9 +18,9 @@ namespace MRF.API.Controllers
         private ResponseDTO _response;
         private MrfresumereviewermapResponseModel _responseModel;
         private readonly ILoggerService _logger;
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _emailService;
         private readonly IHostEnvironment _hostEnvironment;
-        public MrfresumereviewermapController(IUnitOfWork unitOfWork, ILoggerService logger, IEmailService emailService, IHostEnvironment hostEnvironment)
+        public MrfresumereviewermapController(IUnitOfWork unitOfWork, ILoggerService logger, ISmtpEmailService emailService, IHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _response = new ResponseDTO();
@@ -103,7 +103,7 @@ namespace MRF.API.Controllers
                 emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Resume Reviewer added");
                 if (emailRequest != null)
                 {
-                    _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                 }
             }
             return _responseModel;
@@ -168,7 +168,7 @@ namespace MRF.API.Controllers
                     emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Resume Reviewer deleted");
                     if (emailRequest != null)
                     {
-                        _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                        _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                     }
                 }
             }
@@ -201,7 +201,7 @@ namespace MRF.API.Controllers
                     emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "Resume Reviewer deleted");
                     if (emailRequest != null)
                     {
-                        _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                        _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                     }
                 }
             }

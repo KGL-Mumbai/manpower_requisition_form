@@ -80,6 +80,7 @@ const [roleOptions, roleOptionchange] = useState([]);
           toastRef.current.showSuccessMessage("Form submitted successfully!");
           setTimeout(() => {
              navigateTo("dashborad");
+             window.location.reload();
           }, 1000);
         } else {
           console.error("Request failed with status:", response.status);

@@ -17,9 +17,9 @@ namespace MRF.API.Controllers
         private ResponseDTO _response;
         private ResumeforwarddetailResponseModel _responseModel;
         private readonly ILoggerService _logger;
-        private readonly IEmailService _emailService;
+        private readonly ISmtpEmailService _emailService;
         private readonly IHostEnvironment _hostEnvironment;
-        public ResumeforwarddetailController(IUnitOfWork unitOfWork, ILoggerService logger, IEmailService emailService, IHostEnvironment hostEnvironment)
+        public ResumeforwarddetailController(IUnitOfWork unitOfWork, ILoggerService logger, ISmtpEmailService emailService, IHostEnvironment hostEnvironment)
         {
             _unitOfWork = unitOfWork;
             _response = new ResponseDTO();
@@ -100,7 +100,7 @@ namespace MRF.API.Controllers
                 emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.status == "update MRF");
                 if (emailRequest != null)
                 {
-                    _emailService.SendEmailAsync(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
+                    _emailService.SendEmail(emailRequest.emailTo, emailRequest.Subject, emailRequest.Content);
                 }
             }
             return _responseModel;
