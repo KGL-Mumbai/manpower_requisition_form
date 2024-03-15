@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MimeKit;
 using MRF.DataAccess.Repository.IRepository;
 using MRF.Models.DTO;
 using MRF.Models.Models;
@@ -261,11 +262,77 @@ namespace MRF.API.Controllers
             return freshmrRequest;
         }
 
-        private async Task CallGetMrfdetailsInEmailController(int MrfId, int EmployeeId, int nextMrfStatusId, int currentMrfStatusId)
+        //async method, but replaced it
+        /*private async Task CallGetMrfdetailsInEmailController(int MrfId, int EmployeeId, int nextMrfStatusId, int currentMrfStatusId)
         {
             GetMrfdetailsInEmailController getMrfdetailsInEmailController =
                 new GetMrfdetailsInEmailController(_unitOfWork, _logger, _emailService, _hostEnvironment, _configuration);
             await getMrfdetailsInEmailController.GetRequisitionAsync(MrfId, EmployeeId, nextMrfStatusId, currentMrfStatusId);
+        }*/
+
+        private string GetHtmlTemplateBody(string htmlBody, MrfdetailsEmailRequestModel mrfdetailemail, int employeeId, int MrfStatusId)
+        {
+            string base_url = _configuration["Links:BaseUrl"];
+
+            int MrfId = mrfdetailemail.Id;
+            int EmpId = employeeId;
+            int StatusId = MrfStatusId;
+            int RejectStatusId = 8;
+            string strApprovalLink = $"{base_url}/approve?MrfId={MrfId}&EmpId={EmpId}&StatusId={StatusId}";
+            string strRejectionLink = $"{base_url}/Reject?MrfId={MrfId}&EmpId={EmpId}&StatusId={RejectStatusId}";
+            string strByPassLink = $"{base_url}/Bypass?MrfId={MrfId}&EmpId={EmpId}&StatusId={StatusId}";
+            // Replace placeholders in HTML with data
+            string messageBody = htmlBody
+              .Replace("{ReferenceNo}", mrfdetailemail.ReferenceNo)
+              .Replace("{NumberOfVacancies}", Convert.ToString(mrfdetailemail.NumberOfVacancies))
+              .Replace("{MaxTargetSalary}", Convert.ToString(mrfdetailemail.MaxTargetSalary))
+              .Replace("{TotalTargetSalary}", Convert.ToString(mrfdetailemail.MaxTargetSalary * mrfdetailemail.NumberOfVacancies))
+              .Replace("{GradeMin}", mrfdetailemail.GradeMin)
+              .Replace("{GradeMax}", mrfdetailemail.GradeMax)
+              .Replace("{PositionName}", mrfdetailemail.PositionName)
+              .Replace("{Department}", mrfdetailemail.Department)
+              .Replace("{SubDepartment}", mrfdetailemail.SubDepartment)
+              .Replace("{Project}", mrfdetailemail.Project)
+              .Replace("{Justification}", mrfdetailemail.Justification)
+              .Replace("{MRFRaisedBy}", Convert.ToString(mrfdetailemail.MRFRaisedBy))
+              .Replace("{approvalLink}", strApprovalLink)
+              .Replace("{rejectLink}", strRejectionLink)
+              .Replace("{bypassLink}", strByPassLink);
+
+            return messageBody;
+        }
+
+        private bool CallGetMrfdetailsInEmailController(int MrfId, int EmployeeId, int nextMrfStatusId, int currentMrfStatusId)
+        {
+            var mrfdetail = _unitOfWork.MrfdetailsEmailRepository.GetRequisition(MrfId);
+            if (mrfdetail == null)
+            {
+                _logger.LogError($"No result found by this Id:{MrfId}");
+                return false;
+            }
+
+            var emailTemplatePath = Path.Combine(_hostEnvironment.ContentRootPath, "EmailTemplate", "MRFEmailTemplate.html");
+            string htmlBody;
+            using (var sourceReader = System.IO.File.OpenText(emailTemplatePath))
+            {
+                var builder = new BodyBuilder();
+                builder.HtmlBody = sourceReader.ReadToEnd();
+                htmlBody = GetHtmlTemplateBody(builder.HtmlBody, mrfdetail, EmployeeId, nextMrfStatusId);
+            }
+
+            var EmpDetails = _unitOfWork.Employeedetails.Get(u => u.Id == EmployeeId);
+
+            //Get MRF Status
+            var MrfStatus = _unitOfWork.Mrfstatusmaster.Get(u => u.Id == currentMrfStatusId);
+
+
+            if (MrfStatus != null && EmpDetails != null)
+            {
+                _logger.LogInfo("Sending Email to HOD / Finance Head /COO");
+                _emailService.SendEmailAsync(EmpDetails.Email, MrfStatus.Status, htmlBody);
+                return true;
+            }
+            return false;
         }
 
         private int CallEmailApprovalController(MrfdetailRequestModel request, int mrfId, bool Update, out int nextMrfStatusId) 
@@ -566,7 +633,7 @@ namespace MRF.API.Controllers
         [SwaggerResponse(StatusCodes.Status422UnprocessableEntity, Description = "Unprocessable entity")]
         [SwaggerResponse(StatusCodes.Status500InternalServerError, Description = "Internal server error")]
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Description = "Service Unavailable")]
-        public async Task<MrfdetaiResponseModel> PartialUpdateMRFStatus(int id, [FromBody] MrfdetailRequestModel request)
+        public MrfdetaiResponseModel PartialUpdateMRFStatus(int id, [FromBody] MrfdetailRequestModel request)
         {
             var existingStatus = _unitOfWork.Mrfdetail.Get(u => u.Id == id);
             mrfUrl = _configuration["MRFUrl"].Replace("ID", id.ToString());
@@ -604,9 +671,8 @@ namespace MRF.API.Controllers
 
                 if (new List<int> { 11, 12, 13 }.Contains(request.MrfStatusId))
                 {
-                    //emailmaster emailRequest = _unitOfWork.emailmaster.Get(u => u.statusId == request.MrfStatusId);
-
-                    await CallGetMrfdetailsInEmailController(id, employeeId, nextMrfStatusId, request.MrfStatusId); //emails approval requests
+                    bool emailSent =  CallGetMrfdetailsInEmailController(id, employeeId, nextMrfStatusId, request.MrfStatusId); //emails approval requests
+                    if (!emailSent) _logger.LogError($"No Email Sent to HOD / Finance Head /COO for MrfId: {id}");
 
                     if (emailRequest != null)
                     {

@@ -412,9 +412,11 @@ text-align: center;
 
 
 .superadmin .dashboard_wrapper,
+.function_head .dashboard_wrapper,
+.finance_head .dashboard_wrapper,
 .admin .dashboard_wrapper {
  
-  height: 95vh;
+  height: 90vh;
   display: flex;
   padding: 15px 20px;
   flex-direction: column;
