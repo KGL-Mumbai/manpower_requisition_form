@@ -38,8 +38,8 @@ namespace MRF.API.Controllers
         [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Description = "Service Unavailable")]
         public async Task<MrfdetailsEmailRequestModel> GetRequisitionAsync(int MrfId, int EmployeeId,int nextMrfStatusId,int currentMrfStatusId)
         {
-            //getting null even when id is present need to check this for bug #779
-            var mrfdetail = await _unitOfWork.MrfdetailsEmailRepository.GetRequisition(MrfId); //converted this to async method
+            
+            var mrfdetail = _unitOfWork.MrfdetailsEmailRepository.GetRequisition(MrfId); //converted this to async method
             if (mrfdetail == null)
             {
                 _logger.LogError($"No result found by this Id:{MrfId}");

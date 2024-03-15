@@ -157,7 +157,13 @@ export const navigateTo = (sPageKey) => {
 
 export const changeDateFormat = (d) => {
   //yyyy-mm-dd format
-  return new Date(d).toISOString().slice(0, 10).replaceAll("/", "-");
+  const localDate = new Date(d);
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, "0");
+  const day = String(localDate.getDate()).padStart(2, "0");
+
+  return `${day}-${month}-${year}`;
+  // return new Date(d).toISOString().slice(0, 10).replaceAll("/", "-");
 };
 
 export const strToArray = (s) => {
@@ -366,13 +372,15 @@ export const removeHtmlTags = (htmlString) => {
 
 export const convertToDays=(mrf)=>{
   const dateString = changeDateFormat(mrf.createdOnUtc);
-  const [year, month, day] = dateString.split("-").map(Number);
+  const [day,month,year] = dateString.split("-").map(Number);
+  
   const createdDate = new Date(year, month - 1, day);
   const today = new Date();
   const timeDifference = today - createdDate;
   const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
   return daysDifference;
 }
+
 export const MRF_STATUS_FOR_DISABLE =(roleId,mrfstatusId)=>{
   if((roleId === ROLES.hr || roleId === ROLES.mrfOwner || roleId === ROLES.resumeReviwer|| roleId === ROLES.interviewer)  && [
     MRF_STATUS.closed,MRF_STATUS.rejected,MRF_STATUS.withdrawn
