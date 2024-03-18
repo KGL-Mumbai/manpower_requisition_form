@@ -4,14 +4,12 @@ import "../css/MyRequistionsBody.css";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { API_URL } from "../constants/config";
-import { arrayToObj, getData, getDataAPI, objToIntArray, postData, putData, strToArray } from "../constants/Utils";
+import { getData, getDataAPI, postData, putData } from "../constants/Utils";
 import ToastMessages from "../components/ToastMessages";
 import DropdownComponent from "../components/Dropdown";
 import InputTextCp from "../components/Textbox";
 import { FilterMatchMode } from "primereact/api";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { MultiSelect } from "primereact/multiselect";
-import MultiSelectDropdown from "../components/multiselectDropdown";
 export default function AllEmployees() {
   const [mergeDataa, setmergeData] = useState([{}]);
   const [roleId, setRoleId] = useState([]);
@@ -33,7 +31,7 @@ export default function AllEmployees() {
       const mergeData = (data1, data2) => {
         let temp = {};
         data2.forEach((item) => {
-          temp[item.employeeCode] = [item.contactNo, item.roleId,item.multipleRoleIds];
+          temp[item.employeeCode] = [item.contactNo, item.roleId];
         });
         data1.forEach((item1) => {
           let commonIdentifier = item1.employeeId;
@@ -45,8 +43,7 @@ export default function AllEmployees() {
             name: item1.userName,
             email: item1.email,
             contact: matchingItem2 ? matchingItem2[0] : null,
-            roleid: matchingItem2 ? matchingItem2[1] : "",
-            multipleRoleIds: matchingItem2 ? matchingItem2[2] : "",
+            roleid: matchingItem2 ? matchingItem2[1] : null,
           };
           merged.push(mergedItem);
           setIsLoading(false);
@@ -60,21 +57,17 @@ export default function AllEmployees() {
         options = data.map((x) => {
           return { value: x.id, roleName: x.name };
         });
-
       } else {
         console.error("API response result is ssnot an array:", response);
       }
-
+      
       const data = await getData(API_URL.GET_EMPLOYEE);
       const dbData = data.result;
       const ldapData = await getData(API_URL.ALL_EMPLOYEE);
       let arr = new Array(ldapData.length).fill(false);
       let roleArr = new Array(ldapData.length).fill(0);
-      console.log(dbData)
       mergeData(ldapData, dbData);
 
-      console.log(options)
-      console.log(merged)
       setmergeData(merged);
       setSaveBttn(arr);
       setRoleId(roleArr);
@@ -82,69 +75,39 @@ export default function AllEmployees() {
     };
 
     onload();
-
+    
   }, []);
 
-  const objToArray = (selectedOpt = []) => {
-    return selectedOpt.map((e) => e.employeeId);
-  };
-
-  // const arrayToObj = (options = [], selectedOpt) => {
-  //   if (Array.isArray(selectedOpt)) {
-  //     return options.filter((e) => selectedOpt.includes(e.employeeId));
-  //   }
-  //   // return [selectedOpt];
-  // };
-
   const roleBodyTemplate = (rowData, options) => {
-// console.log(rowData)
-// let mergeedatacopy = [...mergeDataa];
-// console.log(mergeedatacopy)
-// console.log(arrayToObj(
-//   roleOptions,
-//   strToArray(rowData.multipleRoleIds)
-  
-// ))
     const handleDropdownChange = (e) => {
-     console.log(e)
       let mergeedatacopy = [...mergeDataa],
-        index = mergeedatacopy.indexOf(rowData),
-        oCurrentData = mergeedatacopy[index];
-console.log(objToArray(e.value).toString())
+      index=mergeedatacopy.indexOf(rowData),
+      oCurrentData=mergeedatacopy[index];
 
-      // oCurrentData.roleid =objToIntArray(e.value,"roleName").toString()
-      oCurrentData.multipleRoleIds =objToIntArray(e.value, "value").toString();
-      console.log(oCurrentData)
-      
-      oCurrentData.actionBtnEnable = true;
-      mergeedatacopy[index] = oCurrentData;
-      //   let sv = [...saveBttn];
-      //   sv[options.rowIndex] = true;
-      //   setSaveBttn(sv);
 
-      //   mergeedatacopy[options.rowIndex].roleid = e.target.value;
+      oCurrentData.roleid= e.target.value;
+      oCurrentData.actionBtnEnable=true;
+      mergeedatacopy[index]=oCurrentData;
+    //   let sv = [...saveBttn];
+    //   sv[options.rowIndex] = true;
+    //   setSaveBttn(sv);
+
+    //   mergeedatacopy[options.rowIndex].roleid = e.target.value;
       setmergeData(mergeedatacopy);
     };
-// console.log(rowData.multipleRoleIds)
-   
+
     return (
-      <MultiSelectDropdown
+      <DropdownComponent
         optionLabel="roleName"
-        // className="drop-width"
+        optionValue="value"
+        value={rowData.roleid}
+        type="roleid"
         options={roleOptions}
-        value={arrayToObj(
-          roleOptions,
-          strToArray(rowData.multipleRoleIds),"value"
-          
-        )}
-        placeholder={"Select Multiple Role"}
         onChange={handleDropdownChange}
-
-
-        className="w-full md:w-15rem"
+        placeholder={"Select Role"}
+        className="w-full md:w-12rem"
       />
-
-    )
+    );
   };
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -189,7 +152,7 @@ console.log(objToArray(e.value).toString())
       updatedByEmployeeId: 1,
       updatedOnUtc: new Date().toISOString(),
     };
-
+   
 
     try {
       let checkEmp = await getData(
@@ -226,7 +189,7 @@ console.log(objToArray(e.value).toString())
               "Role assigned/updated successfully!"
             );
             setIsLoading(false);
-            data.actionBtnEnable = false;
+            data.actionBtnEnable=false;
           }
         } else {
           console.error("Request failed with status:", upEmp.status);
@@ -248,7 +211,7 @@ console.log(objToArray(e.value).toString())
               "Role assigned/updated successfully!"
             );
             setIsLoading(false);
-            data.actionBtnEnable = false;
+            data.actionBtnEnable=false;
           }
         } else {
           console.error("Request failed with status:", response.status);
@@ -270,16 +233,16 @@ console.log(objToArray(e.value).toString())
     }
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionBodyTemplate=(rowData)=>{
 
-    if (rowData && rowData.actionBtnEnable) {
+    if(rowData && rowData.actionBtnEnable){
       return (
-        <Button
-          icon="pi pi-save "
-          className="action_btn"
-          onClick={() => { update(rowData) }}
-        />
-      );
+              <Button
+                icon="pi pi-save "
+                className="action_btn"
+                onClick={()=>{update(rowData)}}
+              />
+            );
     }
     return <Button icon="pi pi-save" className="action_btn" disabled />;
 
@@ -329,7 +292,7 @@ console.log(objToArray(e.value).toString())
       body: actionBodyTemplate,
     },
   ];
-
+  
   return (
     <div className="my-req">
       <>
@@ -343,10 +306,10 @@ console.log(objToArray(e.value).toString())
             rows={10}
             filters={filters}
             scrollable
-            rowsPerPageOptions={[5, 10, 25, 50, 100, 500]}
+            rowsPerPageOptions={[5, 10, 25, 50,100,500]} 
             scrollHeight="flex"
           >
-
+            
             {columns.map((col, index) => (
               <Column
                 key={index}
