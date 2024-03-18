@@ -112,9 +112,9 @@ const AddCandidate = (reqId) => {
       try {
         const fileUploadResponse = await fetch(
           API_URL.RESUME_UPLOAD +
-            removeSpaces(
-              formData.name + "_" + mrfData.mrfRefenceNo.replace(/\//g, "_")
-            ),
+          removeSpaces(
+            formData.name + "_" + mrfData.mrfRefenceNo.replace(/\//g, "_")
+          ),
           {
             method: "POST",
             body: fileUploadData,
@@ -135,15 +135,15 @@ const AddCandidate = (reqId) => {
             resumePath:
               selectedFile.type === "application/pdf"
                 ? removeSpaces(
-                    formData.name +
-                      "_" +
-                      mrfData.mrfRefenceNo.replace(/\//g, "_")
-                  ) + ".pdf"
+                  formData.name +
+                  "_" +
+                  mrfData.mrfRefenceNo.replace(/\//g, "_")
+                ) + ".pdf"
                 : removeSpaces(
-                    formData.name +
-                      "_" +
-                      mrfData.mrfRefenceNo.replace(/\//g, "_")
-                  ) + ".docx",
+                  formData.name +
+                  "_" +
+                  mrfData.mrfRefenceNo.replace(/\//g, "_")
+                ) + ".docx",
             candidateStatusId: 1,
             reviewedByEmployeeIds: "",
             createdByEmployeeId: formData.createdByEmployeeId,
@@ -239,7 +239,7 @@ const AddCandidate = (reqId) => {
         <div className="flex flex-column gap-2 w-full p-3 py-2 h-full ">
           <div
             className="border-round-lg bg-white text-black-alpha-90 p-3 flex flex-column justify-content-between"
-            style={{ height: "81vh" }}
+          
           >
             <h3 className="text-xl my-2">Fill the Details :</h3>
             <section
@@ -303,8 +303,8 @@ const AddCandidate = (reqId) => {
                         className="w-full md:w-13rem"
                       />
                     </div>
-                   
-                      <InputMask
+
+                    <InputMask
                         mask={mask}
                         value={formData.contactNo}
                         onChange={(e) =>
@@ -317,10 +317,8 @@ const AddCandidate = (reqId) => {
                         // autoClear={false}
                         className="w-full"
                       />
-                   
                   </div>
                 </div>
-                
                 <div className="flex flex-column w-6 gap-2">
                   <label htmlFor="contact" className="font-bold text-sm">
                     Source Name
@@ -357,7 +355,7 @@ const AddCandidate = (reqId) => {
                     paginator={resumeArray.length > 5}
                     rows={5}
                     scrollable
-                    stripedRows 
+                    stripedRows
                     draggable={false}
                     scrollHeight="flex"
                     className=" View_DataTable  "

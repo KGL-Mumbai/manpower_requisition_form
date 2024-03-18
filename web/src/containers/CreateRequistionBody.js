@@ -421,7 +421,7 @@ const CreateRequisitionBody = ({
       {formData && (
         <div
           className="border-round-lg bg-white text-black-alpha-90 p-3 flex flex-column justify-content-between"
-          style={{ height: "81vh" }}
+
         >
           {getReqId ? "" : <h3 className="text-xl my-2">Fill the Details</h3>}
 
@@ -1544,7 +1544,6 @@ const CreateRequisitionBody = ({
                                 </>
                               );
                             }
-                           
                           default:
                             if (formData.functionHeadId === 0) {
                               return (

@@ -172,11 +172,11 @@ const MyRequisitions = ({ roleId, userId }) => {
           paginator={reqData.length > 10}
           removableSort
           rows={10}
-          scrollable
+scrollable
           filters={filters}
           rowsPerPageOptions={[5, 10, 25, 50, 100]}
           showGridlines
-          scrollHeight="flex"
+        // scrollHeight="flex"
         >
           {columns.map((col, index) => (
             <Column

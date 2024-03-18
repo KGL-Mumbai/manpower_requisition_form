@@ -3,6 +3,7 @@
 padding: 15px 20px;
 background-color: #f6f6f6;
 color: #0b1016;
+min-height: 90%;
 }
  
  
@@ -18,7 +19,6 @@ margin-bottom: 15px;
   border-radius: 0.5rem;
 background-color: white;
 padding: 0.5rem;
-height: 77vh;
 }
  
 .my_resume-col {

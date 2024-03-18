@@ -116,7 +116,7 @@ function ViewCandidate() {
 					showGridlines
 					filters={filters}
 					scrollable
-					scrollHeight="62vh"
+					// scrollHeight="62vh"
 				>
 					{columns.map((col, index) => (
 						<Column

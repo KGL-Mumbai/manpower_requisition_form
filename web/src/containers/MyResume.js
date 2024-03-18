@@ -342,7 +342,7 @@ const MyResume = ({ roleId = null, mrfId = 0, userId = null }) => {
           showGridlines
           rowsPerPageOptions={[5, 10, 25, 50, 100]}
           scrollable
-          scrollHeight="flex"
+        // scrollHeight="flex"
         >
           {columns.map((col, index) => (
             <Column

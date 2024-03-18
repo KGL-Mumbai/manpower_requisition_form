@@ -25,8 +25,8 @@ import { Dialog } from "primereact/dialog";
 
 const ResumeSummary = ({
   roleId = null,
- /*  visible,
-  onHide, */
+  /*  visible,
+   onHide, */
   /* mrfId = null, */
   dashboard = true,
   userId = null,
@@ -37,17 +37,17 @@ const ResumeSummary = ({
   const toastRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [mrfId, setMrfId] = useState(0);
-  const [visible,setVisible]=useState(false);
+  const [visible, setVisible] = useState(false);
 
-  const {locationParams} = useSelector((state)=> state.page);
+  const { locationParams } = useSelector((state) => state.page);
 
-  useEffect(()=>{
-    if(locationParams && locationParams.length > 0){
+  useEffect(() => {
+    if (locationParams && locationParams.length > 0) {
       setMrfId(locationParams[0].mrfId);
-    }else{
+    } else {
       setMrfId(0)
     }
-  },[])
+  }, [])
   useEffect(() => {
     if (roleId === ROLES.resumeReviwer && mrfId !== 0) {
       navigateTo("dashboard");
@@ -56,7 +56,7 @@ const ResumeSummary = ({
     if (mrfId || mrfId === 0) {
       fetchData();
     }
-  }, [mrfId,roleId]);
+  }, [mrfId, roleId]);
 
   const fetchData = async () => {
     try {
@@ -79,9 +79,9 @@ const ResumeSummary = ({
       // let array = new Array(response.result.resumeDetails.length).fill(false);
       // setSaveBttn(array);
 
-if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.result.resumeDetails[0]?.mrfStatus)){
-  setVisible(true);
-    }
+      if (roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId, response.result.resumeDetails[0]?.mrfStatus)) {
+        setVisible(true);
+      }
 
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -136,13 +136,13 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
               //   objToArray(e.value);
               // setSaveBttn(sv);
 
-                let resumeReviewers = [...data],
+              let resumeReviewers = [...data],
                 index = resumeReviewers.indexOf(rowData),
                 oCurrentData = resumeReviewers[index];
-              
-                oCurrentData.resumeReviewerEmployeeIds =  objToArray(e.value).toString();
-                oCurrentData.actionBtnEnable =  e.value.length > 0 ? true : false;
-                resumeReviewers[index] = oCurrentData;
+
+              oCurrentData.resumeReviewerEmployeeIds = objToArray(e.value).toString();
+              oCurrentData.actionBtnEnable = e.value.length > 0 ? true : false;
+              resumeReviewers[index] = oCurrentData;
 
               setdata(resumeReviewers);
             }}
@@ -239,7 +239,7 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
             "Resume Reviewers updated successfully!"
           );
         }
-        data.actionBtnEnable=false;
+        data.actionBtnEnable = false;
         setIsLoading(false);
       } else {
         console.error("Request failed with status:", response.status);
@@ -262,7 +262,7 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
     return changeDateFormat(data.createdOnUtc);
   };
 
- 
+
   const reasonTemplate = (resume) => {
     // console.log(resume);
 
@@ -380,7 +380,7 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
           scrollable
           showGridlines
           draggable={false}
-          rowsPerPageOptions={[5, 10, 25, 50]} 
+          rowsPerPageOptions={[5, 10, 25, 50]}
           scrollHeight="flex"
           className="resumeSummary_table"
         >
@@ -402,14 +402,14 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
 
   return (
     <>
-     <Dialog
-      visible={visible}
-      onHide={() => setVisible(false)}
-      draggable={false}
-    >
-      <h3>This MRF ID  <span style={{ fontWeight: "bold", color: "#d9362b" }}>
-            {data[0]?.referenceNo} 
-          </span> is {data[0]?.mrfStatusName} </h3>
+      <Dialog
+        visible={visible}
+        onHide={() => setVisible(false)}
+        draggable={false}
+      >
+        <h3>This MRF ID  <span style={{ fontWeight: "bold", color: "#d9362b" }}>
+          {data[0]?.referenceNo}
+        </span> is {data[0]?.mrfStatusName} </h3>
       </Dialog>
 
       {/* if roleId is equal to this then it will show dialog box otherwise show data table*/}
@@ -445,31 +445,31 @@ if(roleId != ROLES.resumeReviwer && MRF_STATUS_FOR_DISABLE(roleId,response.resul
             className="resume-card"
           > */}
 
-            <DataTable
-              value={data}
-              paginator={data.length > 5}
-              rows={10}
-              scrollable
-              draggable={false}
-              showGridlines
-              rowsPerPageOptions={[5, 10, 25, 50]} 
-          scrollHeight="flex"
-          className="resumeSummary_table"
-            >
-              {columns.map((col, index) => (
-                <Column
-                  key={index}
-                  field={col.field}
-                  header={col.header}
-                  body={col.body}
-                  bodyClassName={"resume-col" + col.bodyClassName}
-                  sortable={col.sortable}
-                />
-              ))}
-            </DataTable>
-            {isLoading && <LoadingSpinner />}
-            <ToastMessages ref={toastRef} />
-         {/*  </Dialog> */}
+          <DataTable
+            value={data}
+            paginator={data.length > 10}
+            rows={10}
+            scrollable
+            draggable={false}
+            showGridlines
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            // scrollHeight="flex"
+            className="resumeSummary_table"
+          >
+            {columns.map((col, index) => (
+              <Column
+                key={index}
+                field={col.field}
+                header={col.header}
+                body={col.body}
+                bodyClassName={"resume-col" + col.bodyClassName}
+                sortable={col.sortable}
+              />
+            ))}
+          </DataTable>
+          {isLoading && <LoadingSpinner />}
+          <ToastMessages ref={toastRef} />
+          {/*  </Dialog> */}
         </div>
       )}
 

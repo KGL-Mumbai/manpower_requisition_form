@@ -1,7 +1,8 @@
 export const APP_KEY = "MRF_v1.0";
 const APP = "https://10.22.11.101:90";
-// const APP="https://localhost:7128";
-const APIPath=`${APP}/api/`;
+// const APP = "https://mrf.kwglobal.com/mrf";
+// const APP = "https://localhost:7128";
+const APIPath = `${APP}/api/`;
 export const API_URL = {
   MRF_STATUS_SUMMARY: `${APIPath}Dashboard/GetMrfStatusSummary`,
   RESUME_SUMMARY: `${APIPath}Dashboard/GetMrfResumeSummary/Count`,
@@ -28,22 +29,22 @@ export const API_URL = {
   GET_CANDIDATE_DETAILS: `${APIPath}Candidatedetail/GetReferenceNoAndPositiontitle`,
   GET_EMPLOYEE_DETAILS: `${APIPath}Employeedetails/GetEmployee`,
   ALL_EMPLOYEE: `${APIPath}GetLDAPEmployee`,
-  UPDATE_EMPLOYEE:`${APIPath}Employeedetails/Put/`,
-  GET_ROLE:`${APIPath}Role`,
+  UPDATE_EMPLOYEE: `${APIPath}Employeedetails/Put/`,
+  GET_ROLE: `${APIPath}Role`,
   GET_MYRESUME: `${APIPath}Candidatedetail/GetResumeDropdownlist`,
   ASSIGNMENT_UPLOAD: `${APIPath}Upload?ResumeOrAssign=Assignment&FileName=`,
-  ASSIGNMENT_POST:`${APIPath}Attachment`,
-  CREATE_EMPLOYEE:`${APIPath}Employeedetails/Post/`,
+  ASSIGNMENT_POST: `${APIPath}Attachment`,
+  CREATE_EMPLOYEE: `${APIPath}Employeedetails/Post/`,
   GET_EMPLOYEE_BY_EMP_CODE: `${APIPath}Employeedetails/GetEmployeeByEmpCode`,
-  GET_EMPLOYEE:`${APIPath}Employeedetails/GetAllEmpRoleWithEmpCode`,
-  DELETE_DRAFTED_MRF:`${APIPath}Mrfdetail/Delete/`,
+  GET_EMPLOYEE: `${APIPath}Employeedetails/GetAllEmpRoleWithEmpCode`,
+  DELETE_DRAFTED_MRF: `${APIPath}Mrfdetail/Delete/`,
 };
- 
+
 export const FILE_URL = {
   RESUME: `${APP}/Resume/`,
   ASSIGNMENT: `${APP}/Assignment/`,
 };
- 
+
 export const ROUTES = {
   dashboard: "dashboard",
   my_requisition: "my_requisition",
@@ -52,16 +53,17 @@ export const ROUTES = {
   mrf_details: "mrf_details",
   add_candidate: "add_candidate",
   view_candidate: "view_candidate",
-  resume_summary:"resume_summary",
-  mrf_summary:"mrf_summary",
-  interview_summary:"interview_summary",
-  interview_summary_more:"interview_summary_more",
-  my_resume:"my_resume",
-  employee_edit:"employee_edit",
-  employee:"employee",
-  allemployees:"allemployees",
+  resume_summary: "resume_summary",
+  mrf_summary: "mrf_summary",
+  interview_summary: "interview_summary",
+  interview_summary_more: "interview_summary_more",
+  my_resume: "my_resume",
+  employee_edit: "employee_edit",
+  employee: "employee",
+  allemployees: "allemployees",
+
 };
- 
+
 export const MRF_STATUS = {
   draft: 1,
   new: 2,
@@ -77,22 +79,22 @@ export const MRF_STATUS = {
   awaitCooApproval: 12,
   awaitfinanceHeadApproval: 13,
   recivedfinanceHeadApproval: 14,
-  bypassFinanceHeadApproval:15,
+  bypassFinanceHeadApproval: 15,
   mrfTransferToNew: 16,
 };
 export const RESUME_STATUS
-={
-  New : 1,
-  Shortlisted:2,
-  Rejected:3,
-  OnHold:4
+  = {
+  New: 1,
+  Shortlisted: 2,
+  Rejected: 3,
+  OnHold: 4
 }
- 
+
 export const COUNTRIES = [
-  { name:<> <span><img src="./images/india_flag.png" width={"20px"} height={"12px"}/></span><span style={{ marginRight: '50px' }}> India </span><span>+91</span></>, code: 'IN' },
-  { name:<><span><img src="./images/us_flag.png" width={"20px"} height={"12px"}/></span> <span style={{ marginRight: '75px' }}> US </span><span>+1</span></>, code: 'US' },
+  { name: <> <span><img src="./images/india_flag.png" width={"20px"} height={"12px"} /></span><span style={{ marginRight: '50px' }}> India </span><span>+91</span></>, code: 'IN' },
+  { name: <><span><img src="./images/us_flag.png" width={"20px"} height={"12px"} /></span> <span style={{ marginRight: '75px' }}> US </span><span>+1</span></>, code: 'US' },
 ];
- 
+
 export const ROLES = {
   superAdmin: 1,
   admin: 2,
@@ -102,20 +104,20 @@ export const ROLES = {
   interviewer: 6,
   hiringManager: 7,
 };
- 
+
 export const REQUISITION_TYPE = [
   { name: "FR", code: "FR" },
   { name: "RP", code: "RP" },
- 
+
   // Add more options as needed
 ];
- 
+
 export const GENDER = [
   { label: "Male", id: 1 },
   { label: "Female", id: 2 },
   { label: "Any", id: 3 },
 ];
- 
+
 export const MIN_EXPERIENCE_OPTIONS = Array.from({ length: 31 }, (_, i) => ({
   label: i.toString(),
   value: i,
@@ -124,7 +126,7 @@ export const MAX_EXPERIENCE_OPTIONS = Array.from({ length: 31 }, (_, i) => ({
   label: i.toString(),
   value: i,
 }));
- 
+
 export const FORM_SCHEMA_CR = {
   referenceNo: "",
   positionTitleId: "",
@@ -164,12 +166,12 @@ export const FORM_SCHEMA_CR = {
   skills: "",
   skillsText: "",
   jobDescriptionText: "",
-  resumeReviewerEmployeeIds:"",
+  resumeReviewerEmployeeIds: "",
   interviewerEmployeeIds: "",
   hiringManagerId: 0,
   hiringManagerEmpId: 0,
-  hiringManagerCheckValu:0,
-  siteHrSpocCheckValu:0,
+  hiringManagerCheckValu: 0,
+  siteHrSpocCheckValu: 0,
   functionHeadId: 0,
   functionHeadEmpId: 0,
   siteHRSPOCId: 0,
@@ -178,39 +180,39 @@ export const FORM_SCHEMA_CR = {
   financeHeadEmpId: 0,
   presidentnCOOId: 0,
   presidentnCOOEmpId: 0,
-  fiApprovalDate:new Date(),
-  pcApprovalDate:new Date(),
-  spApprovalDate:new Date(),
-  fhApprovalDate:new Date(),
-  hmApprovalDate:new Date(),
-  hrId:undefined,
- 
+  fiApprovalDate: new Date(),
+  pcApprovalDate: new Date(),
+  spApprovalDate: new Date(),
+  fhApprovalDate: new Date(),
+  hmApprovalDate: new Date(),
+  hrId: undefined,
+
 };
-export const INTERVIEW_EVALUATION={
-  AssignmentSent:1,
-  AssignmentReceived :2,
-  InterviewScheduled:3,
-  InterviewRescheduled:4,
-  InterviewCancelled:5,
-  InterviewOnHold:6,
-  OfferRolledout:7,
-  OfferAccepted:8,
-  OfferacceptedAndDidnotjoin:9,
-  OfferRejected:10,
-  Onboarded:11, 
- AssignmentShortlisted :12,
-  AssignmentRejected :13,
-  InterviewToBeScheduled:14,
-  InterviewForwarded:15,
-  CandidatewasAbsent:16,
-  CodingRound:17,
-  CodingRoundCleared:18,
-  CodingRoundNotCleared:19,
-  FaceToFaceInterview:20,
-  FaceToFaceInterviewCleared :21,
-  FaceToFaceInterviewNotCleared :22,
-  CandidateSelected:23,
-  CandidateNotSelected:24,
+export const INTERVIEW_EVALUATION = {
+  AssignmentSent: 1,
+  AssignmentReceived: 2,
+  InterviewScheduled: 3,
+  InterviewRescheduled: 4,
+  InterviewCancelled: 5,
+  InterviewOnHold: 6,
+  OfferRolledout: 7,
+  OfferAccepted: 8,
+  OfferacceptedAndDidnotjoin: 9,
+  OfferRejected: 10,
+  Onboarded: 11,
+  AssignmentShortlisted: 12,
+  AssignmentRejected: 13,
+  InterviewToBeScheduled: 14,
+  InterviewForwarded: 15,
+  CandidatewasAbsent: 16,
+  CodingRound: 17,
+  CodingRoundCleared: 18,
+  CodingRoundNotCleared: 19,
+  FaceToFaceInterview: 20,
+  FaceToFaceInterviewCleared: 21,
+  FaceToFaceInterviewNotCleared: 22,
+  CandidateSelected: 23,
+  CandidateNotSelected: 24,
 }
- 
-export const emailRegex=/^(?![0-9]+@)\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+export const emailRegex = /^(?![0-9]+@)\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
