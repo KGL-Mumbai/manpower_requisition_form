@@ -198,12 +198,10 @@ namespace MRF.API.Controllers
                 existingStatus.IsAllowed = request.IsAllowed;
                 existingStatus.EmployeeCode = request.EmployeeCode;
                 existingStatus.IsDeleted = request.IsDeleted;
-                existingStatus.RoleId = request.RoleId;
                 existingStatus.AllowedByEmployeeId = request.AllowedByEmployeeId;
                 existingStatus.CreatedByEmployeeId = request.CreatedByEmployeeId;
                 existingStatus.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
                 existingStatus.UpdatedOnUtc = request.UpdatedOnUtc;
-
                 _unitOfWork.Employeedetails.Update(existingStatus);
                 _unitOfWork.Save();
 
@@ -251,6 +249,7 @@ namespace MRF.API.Controllers
                 existingStatus.CreatedByEmployeeId = request.CreatedByEmployeeId;
                 existingStatus.UpdatedByEmployeeId = request.UpdatedByEmployeeId;
                 existingStatus.UpdatedOnUtc = request.UpdatedOnUtc;
+                existingStatus.multipleRoleIds=request.MultipleRoleIds;
                 _unitOfWork.Employeerolemap.Update(existingStatus);
                 _unitOfWork.Save();
 
