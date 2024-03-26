@@ -53,6 +53,7 @@ namespace MRF.DataAccess.Repository
                                                     Name = ed.Name,
                                                     Email = ed.Email,
                                                     RoleId = er.RoleId,
+                                                    multipleRoleIds=er.multipleRoleIds,
                                                     ContactNo = ed.ContactNo,
                                                     EmployeeCode = ed.EmployeeCode,
                                                     IsAllowed = ed.IsAllowed,
