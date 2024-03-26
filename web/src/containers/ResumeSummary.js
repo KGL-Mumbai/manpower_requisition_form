@@ -376,12 +376,12 @@ const ResumeSummary = ({
         <DataTable
           value={value}
           paginator={value.length > 5}
-          rows={10}
+          rows={5}
           scrollable
           showGridlines
           draggable={false}
           rowsPerPageOptions={[5, 10, 25, 50]}
-          scrollHeight="flex"
+          // scrollHeight="flex"
           className="resumeSummary_table"
         >
           {columns.map((col, index) => (

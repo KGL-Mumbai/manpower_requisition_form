@@ -102,7 +102,7 @@ const DashMrfStatus = ({
     },
     {
       field: "createdOnUtc",
-      header: "MRF Open since",
+      header: "MRF Open Since",
       body: convertToDayBodytemplate,
       bodyClassName: "mrfdraft-col mrfdraft-ref-col ",
       sortable: true,
@@ -157,7 +157,7 @@ const DashMrfStatus = ({
           scrollable
           showGridlines
           rowsPerPageOptions={[5, 10, 25, 50]} 
-          scrollHeight="flex"
+          // scrollHeight="flex"
           className="dashmrf_status_table"
         >
           {columns.map((col,index) => (

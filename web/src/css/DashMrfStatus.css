@@ -1,9 +1,9 @@
 .mrf_summary_cont{
   display: flex;
-  height: 85vh;
   padding: 15px 20px;
   flex-direction: column;
   background-color: #f6f6f6;
+  min-height: 90%;
 }
 .mrf_summary_cont .dashboard_title {
   font-size: 16px;
@@ -19,7 +19,6 @@
   border-radius: 0.5rem;
 	background-color: white;
 	padding: 0.5rem;
-	height: 77vh;
 }
 .mrfdraft-card {
   position: absolute;
