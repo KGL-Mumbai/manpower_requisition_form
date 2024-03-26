@@ -353,7 +353,8 @@ INSERT INTO `EvaluationStatusMaster` (`Id`, `Status`,`RoleId`, `IsActive`, `Crea
 (21, 'FaceToFace Interview Cleared',6, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22'),
 (22, 'FaceToFace Interview Not Cleared',6, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22'),
 (23, 'Candidate Selected',6, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22'),
-(24, 'Candidate Not Selected',6, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22');
+(24, 'Candidate Not Selected',6, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22'),
+(25 ,'On Hold',4, 1, 1, '2023-08-06 19:01:22', 1, '2023-08-06 19:01:22');
  
 
 -- --------------------------------------------------------
@@ -1885,7 +1886,7 @@ ALTER TABLE `EvaluationMaster`
 -- AUTO_INCREMENT for table `EvaluationStatusMaster`
 --
 ALTER TABLE `EvaluationStatusMaster`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `FreshMrfDetails`
